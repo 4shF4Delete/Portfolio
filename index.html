@@ -7,288 +7,218 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- ELITE CSS VARIABLES --- */
+        /* --- APPLE DARK MODE CSS VARIABLES --- */
         :root { 
-            --bg: #050505; 
+            --bg: #000000; /* Pure black */
+            --surface: #1d1d1f; /* Apple dark mode card gray */
             --text-main: #f5f5f7; 
             --text-muted: #86868b;
-            --accent-1: #3b82f6; 
-            --accent-2: #8b5cf6; 
-            --accent-3: #10b981; 
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent-1: #2997ff; /* Apple Blue */
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); overflow-x: hidden; line-height: 1.6; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); overflow-x: hidden; line-height: 1.47059; letter-spacing: -0.022em; -webkit-font-smoothing: antialiased; }
         body.locked { overflow: hidden; }
 
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-1); }
-
-        /* --- AMBIENT BACKGROUND GLOWS --- */
-        .ambient-glow { position: fixed; border-radius: 50%; filter: blur(140px); z-index: -1; opacity: 0.6; animation: float 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; }
-        .glow-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--accent-1); }
-        .glow-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: var(--accent-2); animation-delay: -5s; }
-        .glow-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: var(--accent-3); opacity: 0.3; animation-delay: -10s; }
-        @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10vw, 10vh) scale(1.2); } }
-
-        /* --- SCROLL REVEAL ANIMATIONS --- */
-        .reveal { opacity: 0; transform: translateY(60px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        .reveal.delay-1 { transition-delay: 0.1s; }
-        .reveal.delay-2 { transition-delay: 0.2s; }
-        .reveal.delay-3 { transition-delay: 0.3s; }
+        ::-webkit-scrollbar-thumb { background: #424245; border-radius: 10px; }
 
         /* --- INTRO SCREEN (Cinematic) --- */
-        #intro-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #050505; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1); }
+        #intro-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: opacity 0.8s ease; }
         .intro-text-wrapper { overflow: hidden; }
-        #intro-screen h1 { font-family: 'Syne', sans-serif; font-size: 4vw; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1; text-align: center; transform: translateY(100%); animation: slideUpReveal 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .click-prompt { margin-top: 40px; font-size: 0.9em; letter-spacing: 4px; text-transform: uppercase; color: var(--text-muted); opacity: 0; animation: fadeIn 2s ease forwards 1s; }
-        .intro-hidden { transform: translateY(-100%); }
-        @keyframes slideUpReveal { to { transform: translateY(0); } }
-        @keyframes fadeIn { to { opacity: 1; } }
+        #intro-screen h1 { font-family: 'Syne', sans-serif; font-size: 4vw; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1; text-align: center; }
+        .click-prompt { margin-top: 40px; font-size: 0.9em; letter-spacing: 4px; text-transform: uppercase; color: var(--text-muted); animation: pulse 2s infinite; }
+        .intro-hidden { opacity: 0; pointer-events: none; }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
         /* --- HERO SECTION --- */
-        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 5vw; }
-        .hero-content { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1400px; z-index: 10; }
+        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 5vw; }
+        .hero-content { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1200px; z-index: 10; gap: 40px; }
 
         .hero-text { flex: 1; }
-        .hero-text h1 { font-family: 'Syne', sans-serif; font-size: 6vw; font-weight: 800; line-height: 0.9; letter-spacing: -0.04em; margin-bottom: 20px; text-transform: uppercase; }
+        .hero-text h1 { font-family: 'Syne', sans-serif; font-size: clamp(3rem, 6vw, 6rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 24px; text-transform: uppercase; }
         .hero-text h1 span { color: transparent; -webkit-text-stroke: 1px var(--text-main); display: block; }
-        .hero-text p { font-size: 1.2rem; color: var(--text-muted); max-width: 450px; font-weight: 300; }
+        .hero-text p { font-size: clamp(1.1rem, 2vw, 1.5rem); color: var(--text-muted); max-width: 500px; font-weight: 400; line-height: 1.4; }
 
-        .hero-visual { position: relative; width: 40vw; max-width: 500px; aspect-ratio: 1; display: flex; justify-content: center; align-items: center; }
-        .visual-frame { position: absolute; width: 100%; height: 100%; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; border: 1px solid rgba(255,255,255,0.2); animation: morph 15s linear infinite; }
-        .profile-pic { width: 80%; height: 80%; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; object-fit: cover; animation: morph 15s linear infinite reverse; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
-        @keyframes morph { 0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; } 34% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; } 67% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; } 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; } }
+        .hero-visual { position: relative; width: 100%; max-width: 450px; aspect-ratio: 1; display: flex; justify-content: center; align-items: center; }
+        .profile-pic { width: 90%; height: 90%; border-radius: 32px; object-fit: cover; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
 
-        .scroll-down { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0.6; }
-        .scroll-line { width: 1px; height: 40px; background: rgba(255,255,255,0.2); position: relative; overflow: hidden; }
-        .scroll-line::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: var(--text-main); animation: scrollLine 2s infinite ease-in-out; }
-        @keyframes scrollLine { 0% { transform: translateY(-100%); } 100% { transform: translateY(200%); } }
+        /* --- LAYOUT WRAPPER (Massive Whitespace) --- */
+        .section-container { max-width: 1200px; margin: 0 auto; padding: 120px 5vw; border-top: 1px solid #333; }
+        .section-title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800; margin-bottom: 60px; text-transform: uppercase; letter-spacing: -0.02em; text-align: center; }
 
-        /* --- LAYOUT WRAPPER --- */
-        .section-container { max-width: 1200px; margin: 0 auto; padding: 10vh 5vw; }
-        .section-title { font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800; margin-bottom: 3rem; text-transform: uppercase; letter-spacing: -0.02em; display: flex; align-items: center; gap: 20px; }
-        .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--glass-border), transparent); }
-
-        /* --- BENTO GRID SYSTEM --- */
-        .bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; grid-auto-rows: minmax(250px, auto); }
-        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 40px; transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; position: relative; overflow: hidden; }
-        .glass-card:hover { transform: translateY(-5px) scale(1.01); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        /* --- APPLE-STYLE CARDS (Bento Grid) --- */
+        .bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .glass-card { background: var(--surface); border-radius: 24px; padding: 48px 32px; transition: transform 0.3s ease; display: flex; flex-direction: column; justify-content: flex-start; }
+        .glass-card:hover { transform: scale(1.02); }
 
         .span-2 { grid-column: span 2; }
         .span-full { grid-column: 1 / -1; }
 
-        .card-icon { font-size: 2rem; color: var(--accent-1); margin-bottom: 20px; }
-        .glass-card h3 { font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 10px; }
-        .glass-card h4 { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--accent-1); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px;}
-        .glass-card p { color: var(--text-muted); font-size: 1rem; font-weight: 300; }
+        .card-icon { font-size: 2.5rem; color: var(--accent-1); margin-bottom: 24px; }
+        .glass-card h4 { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px;}
+        .glass-card h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 16px; line-height: 1.2; }
+        .glass-card p { color: var(--text-muted); font-size: 1.05rem; font-weight: 400; line-height: 1.5; }
 
         /* --- TRAJECTORY / TIMELINE --- */
-        .timeline-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        .timeline { border-left: 1px solid var(--glass-border); padding-left: 30px; margin-left: 15px; }
-        .timeline-item { position: relative; margin-bottom: 50px; }
-        .timeline-item::before { content: ''; position: absolute; left: -36px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent-1); box-shadow: 0 0 10px var(--accent-1); }
-        .timeline-date { font-size: 0.85rem; color: var(--accent-1); letter-spacing: 1px; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
-        .timeline-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 5px; color: white; }
-        .timeline-subtitle { font-size: 1rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 300; }
+        .timeline-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+        .timeline { padding-left: 20px; }
+        .timeline-item { position: relative; margin-bottom: 60px; border-left: 2px solid #333; padding-left: 30px; }
+        .timeline-item::before { content: ''; position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-1); }
+        .timeline-date { font-size: 0.9rem; color: var(--accent-1); font-weight: 600; margin-bottom: 8px; }
+        .timeline-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; color: white; }
+        .timeline-subtitle { font-size: 1.05rem; color: var(--text-muted); font-weight: 400; }
 
-        /* --- SKILLS (Sliding Hover Reveal) --- */
-        .skills-wrapper { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; padding: 40px 0; }
-        .skill-pill { position: relative; overflow: hidden; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 50px; cursor: default; backdrop-filter: blur(10px); min-width: 230px; height: 55px; }
-
-        .skill-content { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s; font-weight: 500; }
-        .skill-content i { color: var(--text-muted); }
-
-        .skill-rating { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--text-main); color: var(--bg); display: flex; align-items: center; justify-content: center; gap: 4px; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 50px; font-size: 0.8rem; }
-        .skill-rating .star { color: var(--bg); opacity: 0.3; }
-        .skill-rating .star.filled { opacity: 1; }
-
-        .skill-pill:hover .skill-content { transform: translateY(-100%); opacity: 0; }
-        .skill-pill:hover .skill-rating { transform: translateY(0); }
+        /* --- SKILLS --- */
+        .skills-wrapper { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+        .skill-pill { background: var(--surface); border-radius: 100px; padding: 16px 24px; display: flex; align-items: center; gap: 12px; font-weight: 500; font-size: 1.1rem; }
+        .skill-content i { color: var(--text-muted); margin-right: 8px; }
+        .skill-rating { display: flex; gap: 4px; margin-left: 8px; }
+        .skill-rating .star { color: #424245; font-size: 0.9rem; }
+        .skill-rating .star.filled { color: var(--accent-1); }
 
         /* --- CAROUSEL --- */
-        .cert-section { overflow: hidden; padding: 5vh 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); margin: 5vh 0; background: rgba(0,0,0,0.2); }
-        .carousel-track { display: flex; width: max-content; animation: ultraScroll 30s linear infinite; }
-        .cert-img { height: 250px; width: auto; margin-right: 30px; border-radius: 12px; filter: grayscale(100%) opacity(0.5); transition: all 0.5s ease; cursor: pointer; }
-        .cert-img:hover { filter: grayscale(0%) opacity(1); transform: scale(1.05); z-index: 10; }
+        .cert-section { overflow: hidden; padding: 80px 0; background: var(--surface); margin: 60px 0; }
+        .carousel-track { display: flex; width: max-content; animation: ultraScroll 40s linear infinite; gap: 32px; padding: 0 32px; }
+        .cert-img { height: 280px; width: auto; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         @keyframes ultraScroll { to { transform: translateX(-50%); } }
 
         /* --- CONTACT SECTION --- */
-        .contact-section { text-align: center; padding: 15vh 5vw; }
-        .huge-text { font-family: 'Syne', sans-serif; font-size: 8vw; font-weight: 800; line-height: 1; letter-spacing: -0.04em; margin-bottom: 20px; }
-        .contact-subtext { color: var(--text-muted); font-size: 1.2rem; margin-bottom: 40px; font-weight: 300;}
+        .contact-section { text-align: center; padding: 120px 5vw 160px 5vw; }
+        .huge-text { font-family: 'Syne', sans-serif; font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; line-height: 1; letter-spacing: -0.02em; margin-bottom: 24px; }
+        .contact-subtext { color: var(--text-muted); font-size: 1.2rem; margin-bottom: 48px; }
 
-        .premium-btn { display: inline-flex; align-items: center; gap: 15px; background: var(--text-main); color: var(--bg); padding: 20px 50px; border-radius: 50px; font-size: 1.2rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.4s ease; overflow: hidden; position: relative; }
-        .premium-btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--accent-1); transform: scaleX(0); transform-origin: right; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1; }
-        .premium-btn:hover::before { transform: scaleX(1); transform-origin: left; }
-        .premium-btn span, .premium-btn i { position: relative; z-index: 2; transition: color 0.4s; }
-        .premium-btn:hover span, .premium-btn:hover i { color: white; }
+        .premium-btn { display: inline-flex; align-items: center; gap: 12px; background: var(--text-main); color: var(--bg); padding: 18px 48px; border-radius: 100px; font-size: 1.1rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: transform 0.2s ease; }
+        .premium-btn:hover { transform: scale(1.05); }
 
-        .social-links { display: flex; justify-content: center; gap: 30px; margin-top: 60px; }
-        .social-links a { color: var(--text-muted); font-size: 1.5rem; transition: all 0.3s; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--glass-bg); backdrop-filter: blur(10px); }
-        .social-links a:hover { color: var(--text-main); border-color: var(--text-main); transform: translateY(-5px); background: transparent; }
-
-        /* --- ECOSYSTEM CHAT UI --- */
-        .chat-toggle-btn { 
-            position: fixed; bottom: 40px; right: 40px; 
-            background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); 
-            border: 1px solid var(--glass-border); color: var(--text-main); 
-            border-radius: 50%; width: 70px; height: 70px; font-size: 24px; 
-            cursor: grab; z-index: 1000; 
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            display: flex; align-items: center; justify-content: center;
-            user-select: none; touch-action: none;
-        }
-        .chat-toggle-btn:active { cursor: grabbing; box-shadow: 0 5px 15px rgba(0,0,0,0.8); }
-
-        .chat-container { 
-            position: fixed; width: 380px; max-width: 90vw;
-            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); 
-            border-radius: 24px; border: 1px solid var(--glass-border); 
-            display: flex; flex-direction: column; overflow: hidden; z-index: 1000; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8); 
-            visibility: hidden; opacity: 0; pointer-events: none;
-            transform: translateY(20px) scale(0.95); 
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s; 
-        }
-        .chat-container.active { visibility: visible; opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
-
-        .chat-header { padding: 25px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; cursor: grab; touch-action: none; }
-        .chat-header:active { cursor: grabbing; }
-        .chat-header h3 { font-family: 'Syne', sans-serif; margin: 0; font-size: 1.2em; display: flex; align-items: center; gap: 10px; pointer-events: none; }
-        .chat-close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; transition: color 0.3s; z-index: 10; padding: 5px; }
-        .chat-close-btn:hover { color: var(--text-main); }
-
-        .chat-messages { padding: 25px; height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-        .message { max-width: 85%; padding: 15px 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 300; line-height: 1.5; word-wrap: break-word;}
-        .bot-message { background: rgba(255,255,255,0.05); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--glass-border); }
-        .user-message { background: var(--text-main); color: var(--bg); align-self: flex-end; border-bottom-right-radius: 4px; }
-
-        .chat-input-area { display: flex; padding: 20px; border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); }
-        .chat-input-area input { flex: 1; padding: 15px 20px; border-radius: 30px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); color: white; outline: none; transition: border-color 0.3s; font-family: 'Inter', sans-serif; }
-        .chat-input-area input:focus { border-color: rgba(255,255,255,0.3); }
-        .chat-input-area button { background: var(--text-main); color: var(--bg); border: none; width: 50px; height: 50px; border-radius: 50%; margin-left: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.3s; }
-        .chat-input-area button:hover { transform: scale(1.05); }
+        .social-links { display: flex; justify-content: center; gap: 24px; margin-top: 64px; }
+        .social-links a { color: var(--text-main); font-size: 1.5rem; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--surface); transition: background 0.3s; }
+        .social-links a:hover { background: #333; }
 
         /* --- MODAL --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-box { background: rgba(15, 15, 15, 0.9); border: 1px solid var(--glass-border); width: 90%; max-width: 550px; border-radius: 24px; padding: 50px; transform: translateY(40px) scale(0.95); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
-        .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
-        .modal-box h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 30px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); color: white; outline: none; margin-bottom: 20px; font-family: 'Inter', sans-serif; transition: border-color 0.3s; }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--text-main); }
-        .submit-btn { width: 100%; background: var(--text-main); color: var(--bg); border: none; padding: 18px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: transform 0.3s; }
-        .submit-btn:hover { transform: translateY(-2px); }
-        .close-modal { position: absolute; top: 25px; right: 25px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+        .modal-box { background: var(--surface); width: 90%; max-width: 500px; border-radius: 24px; padding: 48px; transform: scale(0.95); transition: transform 0.4s ease; position: relative; }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+        .modal-box h2 { font-size: 2rem; margin-bottom: 32px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 18px; border-radius: 16px; border: 1px solid #424245; background: var(--bg); color: white; outline: none; margin-bottom: 20px; font-family: 'Inter', sans-serif; font-size: 1rem; }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--accent-1); }
+        .submit-btn { width: 100%; background: var(--text-main); color: var(--bg); border: none; padding: 18px; border-radius: 100px; font-weight: 600; font-size: 1.1rem; cursor: pointer; }
+        .close-modal { position: absolute; top: 24px; right: 24px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+
+        /* --- ECOSYSTEM CHAT UI --- */
+        .chat-toggle-btn { position: fixed; bottom: 40px; right: 40px; background: var(--surface); color: var(--text-main); border-radius: 50%; width: 64px; height: 64px; font-size: 24px; cursor: pointer; z-index: 1000; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: none; }
+        
+        .chat-container { position: fixed; width: 380px; max-width: 90vw; background: rgba(29, 29, 31, 0.95); backdrop-filter: blur(30px); border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; z-index: 1000; box-shadow: 0 30px 60px rgba(0,0,0,0.8); visibility: hidden; opacity: 0; pointer-events: none; transform: translateY(20px); transition: all 0.4s ease; border: 1px solid #333; }
+        .chat-container.active { visibility: visible; opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+        .chat-header { padding: 24px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .chat-header h3 { font-size: 1.1rem; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .chat-close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+
+        .chat-messages { padding: 24px; height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; }
+        .bot-message { background: #333; color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .user-message { background: var(--accent-1); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+
+        .chat-input-area { display: flex; padding: 20px; border-top: 1px solid #333; background: var(--surface); gap: 12px; }
+        .chat-input-area input { flex: 1; padding: 14px 20px; border-radius: 100px; border: 1px solid #424245; background: var(--bg); color: white; outline: none; font-family: 'Inter', sans-serif; }
+        .chat-input-area button { background: var(--accent-1); color: white; border: none; width: 48px; height: 48px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
 
         /* =========================================
-           📱 RESPONSIVE MEDIA QUERIES 
+           📱 RESPONSIVE MEDIA QUERIES (The Anti-Clumping Fix)
            ========================================= */
         @media (max-width: 900px) {
-            .hero-content { flex-direction: column-reverse; text-align: center; gap: 40px; }
-            .hero-text h1 { font-size: 10vw; }
-            .hero-visual { width: 60vw; }
-            .bento-grid { grid-template-columns: 1fr; }
+            .hero-content { flex-direction: column-reverse; text-align: center; margin-top: 10vh; }
+            .hero-visual { max-width: 300px; margin-bottom: 40px; }
+            .bento-grid { grid-template-columns: 1fr; gap: 32px; }
             .span-2 { grid-column: 1 / -1; }
-            .timeline-wrapper { grid-template-columns: 1fr; }
+            .timeline-wrapper { grid-template-columns: 1fr; gap: 0; }
         }
 
         @media (max-width: 600px) {
-            #intro-screen h1 { font-size: 8vw; }
+            /* Massive padding gives mobile elements room to breathe */
+            .section-container { padding: 80px 24px; }
+            .section-title { margin-bottom: 48px; text-align: left; }
             
-            .section-container { padding: 8vh 5vw; }
-            .section-title { font-size: 2rem; flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 2rem; }
-            .section-title::after { width: 100%; height: 1px; flex: none; }
+            .hero { min-height: auto; padding: 120px 24px 80px 24px; }
+            .hero-text h1 { margin-bottom: 16px; }
             
-            .hero-text h1 { font-size: 14vw; margin-bottom: 10px; }
-            .hero-text p { font-size: 1rem; }
-            .hero-visual { width: 75vw; }
+            /* Cards break into full width, tall blocks */
+            .glass-card { padding: 40px 24px; }
             
-            .glass-card { padding: 30px 20px; }
-            .glass-card h3 { font-size: 1.5rem; }
+            .timeline-item { margin-bottom: 48px; }
             
-            .timeline { margin-left: 5px; padding-left: 20px; }
-            .timeline-item::before { left: -26px; }
+            /* Skill pills span full width for easy reading */
+            .skills-wrapper { flex-direction: column; }
+            .skill-pill { justify-content: space-between; padding: 20px 24px; }
             
-            .skill-pill { min-width: 100%; max-width: 350px; }
+            /* Cert carousel gets smaller heights to fit phones */
+            .cert-img { height: 200px; }
             
-            .huge-text { font-size: 12vw; margin-bottom: 15px; }
-            .premium-btn { padding: 15px 30px; font-size: 1rem; }
+            /* Button and chat fixes */
+            .chat-toggle-btn { bottom: 24px; right: 24px; width: 56px; height: 56px; }
+            .chat-container { width: calc(100% - 32px); left: 16px !important; bottom: 96px; right: 16px; }
             
-            .chat-toggle-btn { bottom: 20px; right: 20px; width: 60px; height: 60px; font-size: 20px; }
-            .chat-container { width: calc(100% - 40px); left: 20px !important; bottom: 90px; right: 20px; }
-            .chat-header, .chat-messages, .chat-input-area { padding: 15px; }
+            /* Modal adjustments */
+            .modal-box { padding: 32px 24px; }
         }
     </style>
 </head>
-<body class="locked">
-
-    <div class="ambient-glow glow-1"></div>
-    <div class="ambient-glow glow-2"></div>
-    <div class="ambient-glow glow-3"></div>
+<body>
 
     <div id="intro-screen">
         <div class="intro-text-wrapper">
             <h1>SISTONA.</h1>
         </div>
-        <div class="click-prompt">Click to enter</div>
+        <div class="click-prompt">Tap to Enter</div>
     </div>
 
     <section class="hero">
         <div class="hero-content">
             <div class="hero-text">
-                <h1 class="reveal">John Ashley<br><span>Sistona</span></h1>
-                <p class="reveal delay-1">Bridging the gap between hardware architecture, intuitive UI/UX design, and complex software systems. Based in Iligan City.</p>
+                <h1>John Ashley<br><span>Sistona</span></h1>
+                <p>Bridging the gap between hardware architecture, intuitive UI/UX design, and complex software systems. Based in Iligan City.</p>
             </div>
-            <div class="hero-visual reveal delay-2">
-                <div class="visual-frame"></div>
-                <img src="static/profile.jpg" alt="John Ashley S. Sistona" class="profile-pic" onerror="this.src='https://via.placeholder.com/500/1e293b/e2e8f0?text=JS'">
+            <div class="hero-visual">
+                <img src="static/profile.jpg" alt="John Ashley S. Sistona" class="profile-pic" onerror="this.src='https://via.placeholder.com/500/1d1d1f/f5f5f7?text=JS'">
             </div>
-        </div>
-        <div class="scroll-down reveal delay-3">
-            <span>Scroll</span>
-            <div class="scroll-line"></div>
         </div>
     </section>
 
     <div class="section-container">
-        <h2 class="section-title reveal">Select Works & Leadership</h2>
+        <h2 class="section-title">Select Works & Leadership</h2>
         <div class="bento-grid">
 
-            <div class="glass-card span-2 reveal">
+            <div class="glass-card span-2">
                 <i class="fas fa-route card-icon"></i>
                 <h4>2021 — 2022</h4>
                 <h3>Real-Time Jeepney Tracking App</h3>
                 <p>Served as Project Lead for a team of four. Managed schedules, delegated architecture tasks, and ensured project milestones were met for this high-impact localized transit application.</p>
             </div>
 
-            <div class="glass-card reveal delay-1">
+            <div class="glass-card">
                 <i class="fab fa-figma card-icon"></i>
                 <h4>2020</h4>
                 <h3>Junior UI/UX Intern</h3>
                 <p>MSU-IIT Multimedia Center. Developed interactive prototypes and high-quality designs, collaborating closely with industry experts.</p>
             </div>
 
-            <div class="glass-card reveal">
+            <div class="glass-card">
                 <i class="fas fa-microchip card-icon"></i>
                 <h4>2026 Capstone</h4>
                 <h3>RT-Sync System</h3>
                 <p>Hard Real-Time System architecture utilizing RFID-actuated mechanisms optimized for high-traffic environments.</p>
             </div>
 
-            <div class="glass-card span-2 reveal delay-1">
+            <div class="glass-card span-2">
                 <i class="fas fa-users card-icon"></i>
                 <h4>2025 — Ongoing</h4>
                 <h3>Mayor, ICpEP.se</h3>
@@ -299,10 +229,10 @@
     </div>
 
     <div class="section-container">
-        <h2 class="section-title reveal">Trajectory & Milestones</h2>
+        <h2 class="section-title">Trajectory & Milestones</h2>
         <div class="timeline-wrapper">
 
-            <div class="reveal">
+            <div class="timeline-column">
                 <div class="timeline">
                     <div class="timeline-item">
                         <div class="timeline-date">2023 — 2027</div>
@@ -327,7 +257,7 @@
                 </div>
             </div>
 
-            <div class="reveal delay-1">
+            <div class="timeline-column">
                 <div class="timeline">
                     <div class="timeline-item">
                         <div class="timeline-date">Award</div>
@@ -356,112 +286,112 @@
     </div>
 
     <div class="section-container">
-        <h2 class="section-title reveal">Technical Core</h2>
+        <h2 class="section-title">Technical Core</h2>
         <div class="skills-wrapper">
 
-            <div class="skill-pill reveal">
-                <div class="skill-content"><i class="fas fa-layer-group"></i> Verilog & FPGA</div>
-                <div class="skill-rating">
+            <div class="skill-pill">
+                <span class="skill-content"><i class="fas fa-layer-group"></i> Verilog & FPGA</span>
+                <span class="skill-rating">
                     <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i>
-                </div>
+                </span>
             </div>
 
-            <div class="skill-pill reveal delay-1">
-                <div class="skill-content"><i class="fas fa-server"></i> Intel Quartus</div>
-                <div class="skill-rating">
+            <div class="skill-pill">
+                <span class="skill-content"><i class="fas fa-server"></i> Intel Quartus</span>
+                <span class="skill-rating">
                     <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i>
-                </div>
+                </span>
             </div>
 
-            <div class="skill-pill reveal delay-2">
-                <div class="skill-content"><i class="fas fa-memory"></i> Arduino & ESP32</div>
-                <div class="skill-rating">
+            <div class="skill-pill">
+                <span class="skill-content"><i class="fas fa-memory"></i> Arduino & ESP32</span>
+                <span class="skill-rating">
                     <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
-                </div>
+                </span>
             </div>
 
-            <div class="skill-pill reveal delay-3">
-                <div class="skill-content"><i class="fas fa-cogs"></i> 8051 Microcontrollers</div>
-                <div class="skill-rating">
+            <div class="skill-pill">
+                <span class="skill-content"><i class="fas fa-cogs"></i> 8051 Microcontrollers</span>
+                <span class="skill-rating">
                     <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
-                </div>
+                </span>
             </div>
 
-            <div class="skill-pill reveal">
-                <div class="skill-content"><i class="fab fa-figma"></i> Figma Prototyping</div>
-                <div class="skill-rating">
+            <div class="skill-pill">
+                <span class="skill-content"><i class="fab fa-figma"></i> Figma Prototyping</span>
+                <span class="skill-rating">
                     <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
-                </div>
+                </span>
             </div>
 
-            <div class="skill-pill reveal delay-1">
-                <div class="skill-content"><i class="fas fa-palette"></i> Photoshop & Canva</div>
-                <div class="skill-rating">
+            <div class="skill-pill">
+                <span class="skill-content"><i class="fas fa-palette"></i> Photoshop & Canva</span>
+                <span class="skill-rating">
                     <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
-                </div>
+                </span>
             </div>
 
-            <div class="skill-pill reveal delay-2">
-                <div class="skill-content"><i class="fab fa-python"></i> Python & Django</div>
-                <div class="skill-rating">
+            <div class="skill-pill">
+                <span class="skill-content"><i class="fab fa-python"></i> Python & Django</span>
+                <span class="skill-rating">
                     <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
-                </div>
+                </span>
             </div>
 
-            <div class="skill-pill reveal delay-3">
-                <div class="skill-content"><i class="fab fa-java"></i> Java</div>
-                <div class="skill-rating">
+            <div class="skill-pill">
+                <span class="skill-content"><i class="fab fa-java"></i> Java</span>
+                <span class="skill-rating">
                     <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
-                </div>
+                </span>
             </div>
 
-            <div class="skill-pill reveal">
-                <div class="skill-content"><i class="fas fa-terminal"></i> C</div>
-                <div class="skill-rating">
+            <div class="skill-pill">
+                <span class="skill-content"><i class="fas fa-terminal"></i> C</span>
+                <span class="skill-rating">
                     <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
-                </div>
+                </span>
             </div>
 
-            <div class="skill-pill reveal delay-1">
-                <div class="skill-content"><i class="fas fa-code"></i> C++</div>
-                <div class="skill-rating">
+            <div class="skill-pill">
+                <span class="skill-content"><i class="fas fa-code"></i> C++</span>
+                <span class="skill-rating">
                     <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
-                </div>
+                </span>
             </div>
 
         </div>
     </div>
 
-    <section class="cert-section reveal">
+    <section class="cert-section">
         <div class="carousel-container">
             <div class="carousel-track">
-                <img src="static/cert1.jpg" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+1'">
-                <img src="static/cert2.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+2'">
-                <img src="static/cert3.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+3'">
-                <img src="static/cert4.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+4'">
-                <img src="static/cert5.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+5'">
-                <img src="static/cert6.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+6'">
+                <img src="static/cert1.jpg" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+1'">
+                <img src="static/cert2.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+2'">
+                <img src="static/cert3.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+3'">
+                <img src="static/cert4.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+4'">
+                <img src="static/cert5.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+5'">
+                <img src="static/cert6.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+6'">
 
-                <img src="static/cert1.jpg" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+1'">
-                <img src="static/cert2.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+2'">
-                <img src="static/cert3.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+3'">
-                <img src="static/cert4.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+4'">
-                <img src="static/cert5.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+5'">
-                <img src="static/cert6.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+6'">
+                <img src="static/cert1.jpg" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+1'">
+                <img src="static/cert2.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+2'">
+                <img src="static/cert3.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+3'">
+                <img src="static/cert4.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+4'">
+                <img src="static/cert5.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+5'">
+                <img src="static/cert6.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/1d1d1f/f5f5f7?text=Award+6'">
             </div>
         </div>
     </section>
 
     <section class="contact-section">
-        <h2 class="huge-text reveal">LET'S BUILD<br>TOGETHER.</h2>
-        <p class="contact-subtext reveal">(+63) 991-481-5770 &nbsp;|&nbsp; sistonajohnashley@gmail.com</p>
-        <div class="reveal delay-1">
+        <h2 class="huge-text">LET'S BUILD<br>TOGETHER.</h2>
+        <p class="contact-subtext">(+63) 991-481-5770 &nbsp;|&nbsp; sistonajohnashley@gmail.com</p>
+        <div>
             <button id="open-contact-btn" class="premium-btn">
-                <span>Initiate Contact</span> <i class="fas fa-arrow-right"></i>
+                Initiate Contact <i class="fas fa-arrow-right"></i>
             </button>
         </div>
 
-        <div class="social-links reveal delay-2">
+        <div class="social-links">
             <a href="https://www.linkedin.com/in/john-sistona-3589872a8/?locale=en_US" target="_blank"><i class="fab fa-linkedin-in"></i></a>
             <a href="https://web.facebook.com/john.sistona.2024" target="_blank"><i class="fab fa-facebook-f"></i></a>
             <a href="https://www.instagram.com/b.bu.qt/" target="_blank"><i class="fab fa-instagram"></i></a>
@@ -480,10 +410,10 @@
         </div>
     </div>
 
-    <div id="chat-toggle-btn" class="chat-toggle-btn"><i class="fas fa-sparkles"></i></div>
+    <button id="chat-toggle-btn" class="chat-toggle-btn"><i class="fas fa-sparkles"></i></button>
 
     <div id="chat-container" class="chat-container">
-        <div class="chat-header" id="chat-drag-handle">
+        <div class="chat-header">
             <h3><i class="fas fa-microchip"></i> System.AI</h3>
             <button id="chat-close-btn" class="chat-close-btn"><i class="fas fa-times"></i></button>
         </div>
@@ -504,22 +434,10 @@
         introScreen.addEventListener('click', () => {
             introScreen.classList.add('intro-hidden');
             document.body.classList.remove('locked');
-            setTimeout(() => introScreen.style.display = 'none', 1200);
+            setTimeout(() => introScreen.style.display = 'none', 800);
         });
 
-        // 2. Intersection Observer for Scroll Reveals
-        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target); 
-                }
-            });
-        }, observerOptions);
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // 3. Modal Logic
+        // 2. Modal Logic
         const contactModal = document.getElementById('contact-modal');
         document.getElementById('open-contact-btn').addEventListener('click', () => contactModal.classList.add('active'));
         document.getElementById('close-contact-btn').addEventListener('click', () => contactModal.classList.remove('active'));
@@ -531,7 +449,7 @@
             contactModal.classList.remove('active');
         });
 
-        // 4. AI Chatbot API Interaction
+        // 3. AI Chatbot API Interaction
         const chatInput = document.getElementById('chat-input');
         const chatSendBtn = document.getElementById('chat-send-btn');
         const chatMessages = document.getElementById('chat-messages');
@@ -574,185 +492,42 @@
         chatSendBtn.addEventListener('click', sendMessage);
         chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-        // 5. DRAG & DROP UI LOGIC (Updated for Mouse AND Touch support)
+        // 4. Clean Toggle Chat UI
         const toggleBtn = document.getElementById('chat-toggle-btn');
         const chatContainer = document.getElementById('chat-container');
         const chatCloseBtn = document.getElementById('chat-close-btn');
-        const chatDragHandle = document.getElementById('chat-drag-handle');
 
-        // --- TOGGLE BUTTON DRAG LOGIC ---
-        let isDraggingToggle = false;
-        let toggleDragDistance = 0;
-        let tOffsetX, tOffsetY;
-
-        const startToggleDrag = (e) => {
-            isDraggingToggle = true;
-            toggleDragDistance = 0;
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            const rect = toggleBtn.getBoundingClientRect();
-            tOffsetX = clientX - rect.left;
-            tOffsetY = clientY - rect.top;
-            toggleBtn.style.transition = 'none'; 
-        };
-
-        const moveToggleDrag = (e) => {
-            if (isDraggingToggle) {
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                
-                toggleDragDistance += 1; 
-
-                let newX = clientX - tOffsetX;
-                let newY = clientY - tOffsetY;
-
-                const maxLeft = window.innerWidth - toggleBtn.offsetWidth;
-                const maxTop = window.innerHeight - toggleBtn.offsetHeight;
-                newX = Math.max(0, Math.min(newX, maxLeft));
-                newY = Math.max(0, Math.min(newY, maxTop));
-
-                toggleBtn.style.left = `${newX}px`;
-                toggleBtn.style.top = `${newY}px`;
-                toggleBtn.style.bottom = 'auto';
-                toggleBtn.style.right = 'auto';
-            }
-        };
-
-        const endToggleDrag = () => {
-            if (isDraggingToggle) {
-                isDraggingToggle = false;
-                toggleBtn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease';
-            }
-        };
-
-        toggleBtn.addEventListener('mousedown', startToggleDrag);
-        toggleBtn.addEventListener('touchstart', startToggleDrag, {passive: false});
-        
-        document.addEventListener('mousemove', moveToggleDrag);
-        document.addEventListener('touchmove', moveToggleDrag, {passive: false});
-        
-        document.addEventListener('mouseup', endToggleDrag);
-        document.addEventListener('touchend', endToggleDrag);
-
-        // --- OPEN CHATBOX ---
         toggleBtn.addEventListener('click', () => {
-            if (toggleDragDistance > 10) return;
-
+            
+            const isMobile = window.innerWidth <= 600;
+            const chatWidth = isMobile ? window.innerWidth - 32 : 380;
+            const chatHeight = chatContainer.offsetHeight || 500;
             const tRect = toggleBtn.getBoundingClientRect();
             
-            // Check if mobile (screen width < 600px) to handle positioning differently
-            const isMobile = window.innerWidth <= 600;
-            const chatWidth = isMobile ? window.innerWidth - 40 : (chatContainer.offsetWidth || 380);
-            const chatHeight = chatContainer.offsetHeight || 500;
-
             let chatX, chatY;
 
             if (isMobile) {
-                // Ignore button location on mobile and force it to the center/bottom
-                chatX = 20; 
-                chatY = window.innerHeight - chatHeight - 20; 
+                chatX = 16; 
+                chatY = window.innerHeight - chatHeight - 16; 
             } else {
-                if (tRect.left > window.innerWidth / 2) {
-                    chatX = tRect.right - chatWidth;
-                } else {
-                    chatX = tRect.left;
-                }
-
-                if (tRect.top > window.innerHeight / 2) {
-                    chatY = tRect.bottom - chatHeight;
-                } else {
-                    chatY = tRect.top;
-                }
+                chatX = tRect.right - chatWidth;
+                chatY = tRect.bottom - chatHeight;
             }
 
-            chatX = Math.max(10, Math.min(chatX, window.innerWidth - chatWidth - 10));
-            chatY = Math.max(10, Math.min(chatY, window.innerHeight - chatHeight - 10));
+            chatX = Math.max(16, Math.min(chatX, window.innerWidth - chatWidth - 16));
+            chatY = Math.max(16, Math.min(chatY, window.innerHeight - chatHeight - 16));
 
             chatContainer.style.left = `${chatX}px`;
             chatContainer.style.top = `${chatY}px`;
-            chatContainer.style.bottom = 'auto';
-            chatContainer.style.right = 'auto';
 
             chatContainer.classList.add('active');
             toggleBtn.style.transform = 'scale(0)';
         });
 
-        // --- CLOSE CHATBOX ---
         chatCloseBtn.addEventListener('click', () => {
-            const cRect = chatContainer.getBoundingClientRect();
-            const isMobile = window.innerWidth <= 600;
-
-            let toggleX, toggleY;
-
-            if (isMobile) {
-                // Put button back in standard bottom-right corner for mobile
-                toggleX = window.innerWidth - toggleBtn.offsetWidth - 20;
-                toggleY = window.innerHeight - toggleBtn.offsetHeight - 20;
-            } else {
-                toggleX = cRect.right - toggleBtn.offsetWidth; 
-                toggleY = cRect.top;
-            }
-
-            toggleX = Math.max(10, Math.min(toggleX, window.innerWidth - toggleBtn.offsetWidth - 10));
-            toggleY = Math.max(10, Math.min(toggleY, window.innerHeight - toggleBtn.offsetHeight - 10));
-
-            toggleBtn.style.left = `${toggleX}px`;
-            toggleBtn.style.top = `${toggleY}px`;
-            toggleBtn.style.bottom = 'auto';
-            toggleBtn.style.right = 'auto';
-
             chatContainer.classList.remove('active');
             toggleBtn.style.transform = 'scale(1)';
         });
-
-        // --- CHAT CONTAINER DRAG LOGIC ---
-        let isDraggingChat = false;
-        let cOffsetX, cOffsetY;
-
-        const startChatDrag = (e) => {
-            if(e.target.closest('#chat-close-btn')) return;
-            isDraggingChat = true;
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            const rect = chatContainer.getBoundingClientRect();
-            cOffsetX = clientX - rect.left;
-            cOffsetY = clientY - rect.top;
-            chatContainer.style.transition = 'none';
-        };
-
-        const moveChatDrag = (e) => {
-            if (isDraggingChat) {
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                
-                let newX = clientX - cOffsetX;
-                let newY = clientY - cOffsetY;
-
-                const maxLeft = window.innerWidth - chatContainer.offsetWidth;
-                const maxTop = window.innerHeight - chatContainer.offsetHeight;
-                newX = Math.max(0, Math.min(newX, maxLeft));
-                newY = Math.max(0, Math.min(newY, maxTop));
-
-                chatContainer.style.left = `${newX}px`;
-                chatContainer.style.top = `${newY}px`;
-            }
-        };
-
-        const endChatDrag = () => {
-            if (isDraggingChat) {
-                isDraggingChat = false;
-                chatContainer.style.transition = 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s';
-            }
-        };
-
-        chatDragHandle.addEventListener('mousedown', startChatDrag);
-        chatDragHandle.addEventListener('touchstart', startChatDrag, {passive: false});
-        
-        document.addEventListener('mousemove', moveChatDrag);
-        document.addEventListener('touchmove', moveChatDrag, {passive: false});
-        
-        document.addEventListener('mouseup', endChatDrag);
-        document.addEventListener('touchend', endChatDrag);
 
     </script>
 </body>
