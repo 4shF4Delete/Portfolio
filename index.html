@@ -194,14 +194,15 @@
             left: 0; 
             width: 100vw; 
             height: 100vh; 
+            height: 100dvh; /* Dynamic viewport fixes mobile top/bottom gaps permanently */
             background: var(--bg-color); 
             z-index: 10000; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            transition: opacity 1.2s cubic-bezier(0.77, 0, 0.175, 1); 
-            cursor: pointer; /* Visually indicate it can be clicked */
+            cursor: pointer; 
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1); 
         }
         
         .intro-text-wrapper { overflow: hidden; }
@@ -227,14 +228,18 @@
             color: var(--accent-primary); 
             opacity: 0; 
             animation: fadeIn 2s ease forwards 1s; 
-            pointer-events: none; /* Passes clicks to the background */
+            pointer-events: none;
         }
 
         .click-prompt:hover {
             color: var(--text-main);
         }
         
-        .intro-hidden { opacity: 0; pointer-events: none; }
+        /* Subtle slide up animation */
+        .intro-hidden { 
+            transform: translateY(-100%); 
+            pointer-events: none; 
+        }
 
         @keyframes slideUpReveal { to { transform: translateY(0); } }
         @keyframes fadeIn { to { opacity: 1; } }
@@ -379,7 +384,7 @@
 
         .hero-text h1 { 
             font-family: 'Syne', sans-serif; 
-            font-size: clamp(2.5rem, 8vw, 7rem); /* Fluid typography adapted to prevent overflow */
+            font-size: clamp(2.5rem, 8vw, 7rem); 
             font-weight: 800; 
             line-height: 1; 
             letter-spacing: -0.04em; 
@@ -585,7 +590,7 @@
             .timeline-wrapper { grid-template-columns: 1fr; gap: 40px; }
         }
 
-        /* Mobile Phones - Overhauled Typography for Zoom Safety */
+        /* Mobile Phones */
         @media (max-width: 600px) {
             :root {
                 --section-padding-y: 80px;
@@ -593,7 +598,7 @@
             }
             
             .scroll-down { 
-                display: none; /* Safely removes the overlapping issue on mobile */
+                display: none; 
             }
             
             #intro-screen h1 { font-size: 12vw; }
@@ -637,12 +642,12 @@
         <div class="ambient-glow glow-3"></div>
     </div>
 
-    <!-- Intro Loading Screen -->
+    <!-- Intro Loading Screen (Cinematic Slide-Up) -->
     <div id="intro-screen">
         <div class="intro-text-wrapper">
             <h1>SISTONA.</h1>
         </div>
-        <div class="click-prompt">[ CLICK TO PROCEED ]</div>
+        <div class="click-prompt">Click to enter</div>
     </div>
 
     <!-- Floating Navigation Bar -->
@@ -978,7 +983,6 @@
         <p class="contact-subtext reveal">(+63) 991-481-5770 &nbsp;|&nbsp; sistonajohnashley@gmail.com</p>
         
         <div class="reveal delay-1">
-            <!-- Mailto directly, or you can link to form -->
             <a href="mailto:sistonajohnashley@gmail.com" class="premium-btn cursor-hover">
                 <span>Initiate Contact</span> <i class="fas fa-arrow-right"></i>
             </a>
@@ -1006,13 +1010,16 @@
         // ----------------------------------------------------
         const introScreen = document.getElementById('intro-screen');
         
-        // Wait strictly for user click to proceed. No timeouts.
+        // Wait strictly for user click to proceed.
         introScreen.addEventListener('click', dismissIntro);
 
         function dismissIntro() {
             if(!introScreen.classList.contains('intro-hidden')) {
+                // Apply the slide-up CSS transition class
                 introScreen.classList.add('intro-hidden');
                 document.body.classList.remove('locked');
+                
+                // Allow the 1.2s CSS transition to finish before hiding from DOM
                 setTimeout(() => introScreen.style.display = 'none', 1200);
             }
         }
@@ -1029,14 +1036,11 @@
             cursorX = e.clientX;
             cursorY = e.clientY;
             
-            // Instantly move the dot
             cursorDot.style.left = `${cursorX}px`;
             cursorDot.style.top = `${cursorY}px`;
         });
 
-        // Smooth follow animation for the outline
         function animateCursor() {
-            // Easing function for smooth follow
             let distX = cursorX - outlineX;
             let distY = cursorY - outlineY;
             
@@ -1050,8 +1054,7 @@
         }
         animateCursor();
 
-        // Cursor Hover Effects for Links and Buttons
-        const hoverElements = document.querySelectorAll('a, button, .skill-pill, .tilt-card');
+        const hoverElements = document.querySelectorAll('a, button, .skill-pill, .tilt-card, #intro-screen');
         
         hoverElements.forEach(el => {
             el.addEventListener('mouseenter', () => {
@@ -1079,7 +1082,7 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('active');
-                    observer.unobserve(entry.target); // Reveal only once
+                    observer.unobserve(entry.target);
                 }
             });
         }, revealOptions);
@@ -1087,7 +1090,7 @@
         document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
         // ----------------------------------------------------
-        // 4. FLOATING NAVBAR (Scroll Spy & Hide on Scroll Down)
+        // 4. FLOATING NAVBAR (Scroll Spy)
         // ----------------------------------------------------
         const navbar = document.getElementById('navbar');
         let lastScrollTop = 0;
@@ -1095,7 +1098,6 @@
         window.addEventListener('scroll', () => {
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             
-            // Hide navbar on scroll down, show on scroll up
             if (scrollTop > lastScrollTop && scrollTop > 100) {
                 navbar.style.transform = 'translate(-50%, -150%)';
             } else {
@@ -1103,7 +1105,6 @@
             }
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 
-            // Scroll Spy active class
             let current = "";
             const sections = document.querySelectorAll("section, .section-container");
             
@@ -1145,51 +1146,44 @@
             if (isDeleting) {
                 typeWriterElement.innerText = currentText.substring(0, charIndex - 1);
                 charIndex--;
-                typingDelay = 50; // Faster deletion
+                typingDelay = 50;
             } else {
                 typeWriterElement.innerText = currentText.substring(0, charIndex + 1);
                 charIndex++;
-                typingDelay = 100; // Normal typing
+                typingDelay = 100;
             }
             
-            // Word completed
             if (!isDeleting && charIndex === currentText.length) {
-                typingDelay = 2000; // Pause at end of word
+                typingDelay = 2000;
                 isDeleting = true;
             } else if (isDeleting && charIndex === 0) {
                 isDeleting = false;
                 textIndex = (textIndex + 1) % texts.length;
-                typingDelay = 500; // Pause before new word
+                typingDelay = 500;
             }
             
             setTimeout(type, typingDelay);
         }
         
-        // Start typing effect after a short delay
         setTimeout(type, 2000);
 
         // ----------------------------------------------------
-        // 6. VANILLA 3D TILT EFFECT FOR BENTO CARDS
+        // 6. VANILLA 3D TILT EFFECT
         // ----------------------------------------------------
         const tiltCards = document.querySelectorAll('.tilt-card');
-        
-        // Disable tilt on mobile for performance and UX
         const isMobileDevice = window.matchMedia("(max-width: 768px)").matches;
         
         if (!isMobileDevice) {
             tiltCards.forEach(card => {
                 card.addEventListener('mousemove', e => {
                     const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left; // x position within the element
-                    const y = e.clientY - rect.top;  // y position within the element
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
                     
-                    // Calculate center
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
                     
-                    // Max rotation in degrees
                     const maxTilt = 10;
-                    
                     const rotateX = ((y - centerY) / centerY) * -maxTilt;
                     const rotateY = ((x - centerX) / centerX) * maxTilt;
                     
@@ -1198,18 +1192,15 @@
                 
                 card.addEventListener('mouseleave', () => {
                     card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                    // Smooth return transition
                     card.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
                 });
                 
                 card.addEventListener('mouseenter', () => {
-                    // Remove transition while moving for instant feedback
                     card.style.transition = 'none';
                 });
             });
         }
 
-        // Set Current Year in Footer Automatically
         document.getElementById('current-year').innerText = new Date().getFullYear();
 
     </script>
