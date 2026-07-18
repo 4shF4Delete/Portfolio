@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Restored natural zooming capabilities for accessibility and better UX -->
+    <!-- Fluid zooming enabled for accessibility and better UX -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>John Ashley S. Sistona | Creative Engineer</title>
 
@@ -87,7 +87,6 @@
             letter-spacing: -0.01em;
             -webkit-font-smoothing: antialiased; 
             -moz-osx-font-smoothing: grayscale;
-            /* touch-action lock removed to allow smooth zooming */
         }
         
         body.locked { 
@@ -202,6 +201,7 @@
             align-items: center; 
             justify-content: center; 
             transition: opacity 1.2s cubic-bezier(0.77, 0, 0.175, 1); 
+            cursor: pointer; /* Visually indicate it can be clicked */
         }
         
         .intro-text-wrapper { overflow: hidden; }
@@ -227,6 +227,11 @@
             color: var(--accent-primary); 
             opacity: 0; 
             animation: fadeIn 2s ease forwards 1s; 
+            pointer-events: none; /* Passes clicks to the background */
+        }
+
+        .click-prompt:hover {
+            color: var(--text-main);
         }
         
         .intro-hidden { opacity: 0; pointer-events: none; }
@@ -637,7 +642,7 @@
         <div class="intro-text-wrapper">
             <h1>SISTONA.</h1>
         </div>
-        <div class="click-prompt">[ INITIALIZE SYSTEM ]</div>
+        <div class="click-prompt">[ CLICK TO PROCEED ]</div>
     </div>
 
     <!-- Floating Navigation Bar -->
@@ -1001,14 +1006,7 @@
         // ----------------------------------------------------
         const introScreen = document.getElementById('intro-screen');
         
-        // Wait for page to fully load, or allow click to skip
-        window.addEventListener('load', () => {
-            // Keep it up for at least 1.5s for dramatic effect
-            setTimeout(() => {
-                dismissIntro();
-            }, 1500);
-        });
-
+        // Wait strictly for user click to proceed. No timeouts.
         introScreen.addEventListener('click', dismissIntro);
 
         function dismissIntro() {
