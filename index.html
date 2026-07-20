@@ -1,1010 +1,1687 @@
-import sys
-import os
-import json
-import urllib.request
-from django.conf import settings
-from django.core.management import execute_from_command_line
-from django.http import HttpResponse, JsonResponse
-from django.urls import path
-from django.conf.urls.static import static
-from django.views.decorators.csrf import csrf_exempt
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Fluid zooming enabled for accessibility and better UX -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Ashley S. Sistona | Computer Engineer</title>
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    <!-- 
+      ========================================================
+      EXTERNAL RESOURCES & FONTS
+      ========================================================
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-# --- CLOUD READY CONFIGURATION ---
-if not settings.configured:
-    settings.configure(
-        DEBUG=os.environ.get("DEBUG", "False") == "True",
-        SECRET_KEY=os.environ.get("SECRET_KEY", "elite-premium-key-run-locally"),
-        ROOT_URLCONF=__name__,
-        ALLOWED_HOSTS=["*"],
-        STATIC_URL="/static/",
-        STATICFILES_DIRS=[os.path.join(BASE_DIR, "static")],
-        STATIC_ROOT=os.path.join(BASE_DIR, "staticfiles"),
-        MIDDLEWARE=[
-            'django.middleware.security.SecurityMiddleware',
-            'whitenoise.middleware.WhiteNoiseMiddleware',
-        ],
-    )
-
-# Required for Gunicorn (Cloud Web Server)
-from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
-
-
-@csrf_exempt
-def chat_api(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            user_message = data.get('message', '')
-
-            system_prompt = """You are the personal AI assistant for John Ashley S. Sistona. 
-            Keep answers brief, friendly, and highly professional. 
-            Facts about John: 
-            - 3rd-year BS Computer Engineering student at MSU-IIT in Iligan City (2023-2027).
-            - High School: Iligan City East National Highschool (STEM, 2021-2023).
-            - Programming: Python, Django, C, C++, Java, Verilog.
-            - UI/UX & Design: Figma, Photoshop, Canva, Graphic Design, Digital Marketing.
-            - Hardware: Arduino, ESP32, 8051 Microcontrollers, Intel Quartus, FPGA.
-            - Projects: Project Lead for 'Real-Time Jeepney Tracking App' (managed 4 devs), RT-Sync (Hard Real-Time System with RFID), Sea Star Bactericidal Evaluation.
-            - Experience: Mayor of ICpEP.se (leading 192 members), UI/UX Intern at MSU-IIT Multimedia Center, Codechum Trainee, EduHelp Academic Tutor (4.8/5 rating), Red Cross Youth Volunteer.
-            - Awards: Regional Math & Science Champion, Best Robotics Project, Top 5 Inter-High Machine Design.
-            - Phone: (+63) 991-481-5770. Email: sistonajohnashley@gmail.com."""
-
-            req = urllib.request.Request(
-                'http://localhost:11434/api/chat',
-                data=json.dumps({
-                    "model": "llama3.2:1b",
-                    "messages": [
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_message}
-                    ],
-                    "stream": False
-                }).encode('utf-8'),
-                headers={'Content-Type': 'application/json'}
-            )
-            with urllib.request.urlopen(req) as response:
-                result = json.loads(response.read().decode('utf-8'))
-                bot_reply = result['message']['content']
-            return JsonResponse({'reply': bot_reply})
-        except Exception as e:
-            return JsonResponse({
-                                    'reply': "My neural link is currently resting. Please ensure my local AI core (Ollama) is initialized."})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-
-def homepage(request):
-    html_content = """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <!-- Fluid zooming enabled for accessibility and better UX -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>John Ashley S. Sistona | Creative Engineer</title>
-
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-        <style>
-            /* --- ELITE CSS VARIABLES --- */
-            :root { 
-                --bg: #050505; 
-                --text-main: #f5f5f7; 
-                --text-muted: #86868b;
-                --accent-1: #3b82f6; 
-                --accent-2: #8b5cf6; 
-                --accent-3: #10b981; 
-                --glass-bg: rgba(255, 255, 255, 0.03);
-                --glass-border: rgba(255, 255, 255, 0.08);
-            }
-
-            * { box-sizing: border-box; margin: 0; padding: 0; }
-            html { scroll-behavior: smooth; }
-            body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); overflow-x: hidden; line-height: 1.6; }
-            body.locked { overflow: hidden; }
-
-            ::-webkit-scrollbar { width: 8px; }
-            ::-webkit-scrollbar-track { background: var(--bg); }
-            ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-            ::-webkit-scrollbar-thumb:hover { background: var(--accent-1); }
-
-            /* --- AMBIENT BACKGROUND GLOWS --- */
-            .ambient-glow { position: fixed; border-radius: 50%; filter: blur(140px); z-index: -1; opacity: 0.6; animation: float 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; }
-            .glow-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--accent-1); }
-            .glow-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: var(--accent-2); animation-delay: -5s; }
-            .glow-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: var(--accent-3); opacity: 0.3; animation-delay: -10s; }
-            @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10vw, 10vh) scale(1.2); } }
-
-            /* --- SCROLL REVEAL ANIMATIONS --- */
-            .reveal { opacity: 0; transform: translateY(60px); transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
-            .reveal.active { opacity: 1; transform: translateY(0); }
-            .reveal.delay-1 { transition-delay: 0.1s; }
-            .reveal.delay-2 { transition-delay: 0.2s; }
-            .reveal.delay-3 { transition-delay: 0.3s; }
-
-            /* --- INTRO SCREEN (Cinematic 100dvh fix) --- */
-            #intro-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: #050505; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1); }
-            .intro-text-wrapper { overflow: hidden; }
-            #intro-screen h1 { font-family: 'Syne', sans-serif; font-size: 4vw; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1; text-align: center; transform: translateY(100%); animation: slideUpReveal 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-            .click-prompt { margin-top: 40px; font-size: 0.9em; letter-spacing: 4px; text-transform: uppercase; color: var(--text-muted); opacity: 0; animation: fadeIn 2s ease forwards 1s; }
-            .intro-hidden { transform: translateY(-100%); pointer-events: none; }
-            @keyframes slideUpReveal { to { transform: translateY(0); } }
-            @keyframes fadeIn { to { opacity: 1; } }
-
-            /* --- HERO SECTION --- */
-            .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 5vw; }
-            .hero-content { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1400px; z-index: 10; }
-
-            .hero-text { flex: 1; }
-            .hero-text h1 { font-family: 'Syne', sans-serif; font-size: 6vw; font-weight: 800; line-height: 0.9; letter-spacing: -0.04em; margin-bottom: 20px; text-transform: uppercase; }
-            .hero-text h1 span { color: transparent; -webkit-text-stroke: 1px var(--text-main); display: block; }
-            .hero-text p { font-size: 1.2rem; color: var(--text-muted); max-width: 450px; font-weight: 300; }
-
-            .hero-visual { position: relative; width: 40vw; max-width: 500px; aspect-ratio: 1; display: flex; justify-content: center; align-items: center; }
-            .visual-frame { position: absolute; width: 100%; height: 100%; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; border: 1px solid rgba(255,255,255,0.2); animation: morph 15s linear infinite; }
-            .profile-pic { width: 80%; height: 80%; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; object-fit: cover; animation: morph 15s linear infinite reverse; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
-            @keyframes morph { 0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; } 34% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; } 67% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; } 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; } }
-
-            .scroll-down { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0.6; }
-            .scroll-line { width: 1px; height: 40px; background: rgba(255,255,255,0.2); position: relative; overflow: hidden; }
-            .scroll-line::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: var(--text-main); animation: scrollLine 2s infinite ease-in-out; }
-
-            /* --- LAYOUT WRAPPER --- */
-            .section-container { max-width: 1200px; margin: 0 auto; padding: 10vh 5vw; }
-            .section-title { font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800; margin-bottom: 3rem; text-transform: uppercase; letter-spacing: -0.02em; display: flex; align-items: center; gap: 20px; }
-            .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--glass-border), transparent); }
-
-            /* --- BENTO GRID SYSTEM --- */
-            .bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; grid-auto-rows: minmax(250px, auto); }
-            .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 40px; transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; position: relative; overflow: hidden; }
-            .glass-card:hover { transform: translateY(-5px) scale(1.01); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-
-            .span-2 { grid-column: span 2; }
-            .span-full { grid-column: 1 / -1; }
-
-            .card-icon { font-size: 2rem; color: var(--accent-1); margin-bottom: 20px; }
-            .glass-card h3 { font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 10px; }
-            .glass-card h4 { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--accent-1); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px;}
-            .glass-card p { color: var(--text-muted); font-size: 1rem; font-weight: 300; }
-
-            /* --- TRAJECTORY / TIMELINE --- */
-            .timeline-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-            .timeline { border-left: 1px solid var(--glass-border); padding-left: 30px; margin-left: 15px; }
-            .timeline-item { position: relative; margin-bottom: 50px; }
-            .timeline-item::before { content: ''; position: absolute; left: -36px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent-1); box-shadow: 0 0 10px var(--accent-1); }
-            .timeline-date { font-size: 0.85rem; color: var(--accent-1); letter-spacing: 1px; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
-            .timeline-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 5px; color: white; }
-            .timeline-subtitle { font-size: 1rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 300; }
-
-            /* --- SKILLS (Sliding Hover Reveal) --- */
-            .skills-wrapper { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; padding: 40px 0; }
-            .skill-pill { position: relative; overflow: hidden; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 50px; cursor: default; backdrop-filter: blur(10px); min-width: 230px; height: 55px; }
-
-            .skill-content { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s; font-weight: 500; }
-            .skill-content i { color: var(--text-muted); }
-
-            .skill-rating { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--text-main); color: var(--bg); display: flex; align-items: center; justify-content: center; gap: 4px; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 50px; font-size: 0.8rem; }
-            .skill-rating .star { color: var(--bg); opacity: 0.3; }
-            .skill-rating .star.filled { opacity: 1; }
-
-            .skill-pill:hover .skill-content { transform: translateY(-100%); opacity: 0; }
-            .skill-pill:hover .skill-rating { transform: translateY(0); }
+    <!-- 
+      ========================================================
+      MASTER STYLESHEET
+      ========================================================
+    -->
+    <style>
+        /* --- 1. CSS VARIABLES & THEME --- */
+        :root { 
+            /* Core Colors */
+            --bg-color: #050505; 
+            --bg-surface: #0a0a0a;
             
-            /* --- CREATIVE ARCHIVE (Masonry Grid) --- */
-            .filter-controls { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 40px; }
-            .filter-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-muted); padding: 10px 24px; border-radius: 50px; font-family: 'Inter', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; cursor: pointer; }
-            .filter-btn:hover { color: var(--text-main); border-color: rgba(255,255,255,0.2); }
-            .filter-btn.active { background: var(--accent-1); color: var(--bg); border-color: var(--accent-1); font-weight: 600; }
+            /* Text Colors */
+            --text-main: #f5f5f7; 
+            --text-muted: #86868b;
+            --text-dark: #111111;
+            
+            /* Accents */
+            --accent-primary: #3b82f6;   /* Electric Blue */
+            --accent-secondary: #8b5cf6; /* Deep Purple */
+            --accent-tertiary: #10b981;  /* Matrix Green */
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            
+            /* Glassmorphism Variables */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-bg-hover: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-highlight: rgba(255, 255, 255, 0.2);
+            --glass-blur: blur(20px);
+            
+            /* Spacing */
+            --section-padding-y: 140px;
+            --section-padding-x: 5vw;
+            --card-padding: 40px;
+            --grid-gap: 24px;
+            
+            /* Border Radii */
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-pill: 100px;
+            
+            /* Transitions */
+            --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-medium: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-slow: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-            .masonry-grid { column-count: 3; column-gap: 20px; width: 100%; transition: all 0.5s ease; }
-            .masonry-item { break-inside: avoid; margin-bottom: 20px; position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--glass-border); transition: transform 0.4s ease, opacity 0.4s ease; transform: scale(1); opacity: 1; }
-            .masonry-item.hide { display: none; }
-            .masonry-item img { width: 100%; display: block; border-radius: 16px; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* --- 2. CSS RESET & BASE STYLES --- */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            cursor: none;
+        }
+        
+        html { 
+            scroll-behavior: smooth; 
+            font-size: 16px;
+        }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            overflow-wrap: break-word; /* Prevents text from spilling out of its container */
+            line-height: 1.6; 
+            letter-spacing: -0.01em;
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body.locked { 
+            overflow: hidden; 
+        }
 
-            .masonry-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 20px; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 70%, transparent 100%); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; justify-content: flex-end; }
-            .masonry-item:hover .masonry-overlay { transform: translateY(0); }
-            .masonry-item:hover img { transform: scale(1.05); }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { 
+            width: 10px; 
+        }
+        ::-webkit-scrollbar-track { 
+            background: var(--bg-color); 
+        }
+        ::-webkit-scrollbar-thumb { 
+            background: #222; 
+            border-radius: 10px; 
+            border: 2px solid var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb:hover { 
+            background: var(--accent-primary); 
+        }
 
-            .masonry-overlay h4 { color: var(--accent-1); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; font-weight: 600; }
-            .masonry-overlay h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; color: var(--text-main); margin-bottom: 2px; }
-            .masonry-overlay p { color: #aaa; font-size: 0.85rem; font-weight: 300; }
+        ::selection {
+            background: var(--accent-secondary);
+            color: var(--text-main);
+        }
 
-            /* --- CAROUSEL --- */
-            .cert-section { overflow: hidden; padding: 5vh 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); margin: 5vh 0; background: rgba(0,0,0,0.2); }
-            .carousel-track { display: flex; width: max-content; animation: ultraScroll 30s linear infinite; }
-            .cert-img { height: 250px; width: auto; margin-right: 30px; border-radius: 12px; filter: grayscale(100%) opacity(0.5); transition: all 0.5s ease; cursor: pointer; }
-            .cert-img:hover { filter: grayscale(0%) opacity(1); transform: scale(1.05); z-index: 10; }
-            @keyframes ultraScroll { to { transform: translateX(-50%); } }
+        /* --- 3. CUSTOM CURSOR --- */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 99999;
+            pointer-events: none;
+        }
 
-            /* --- CONTACT SECTION --- */
-            .contact-section { text-align: center; padding: 15vh 5vw; }
-            .huge-text { font-family: 'Syne', sans-serif; font-size: 8vw; font-weight: 800; line-height: 1; letter-spacing: -0.04em; margin-bottom: 20px; }
-            .contact-subtext { color: var(--text-muted); font-size: 1.2rem; margin-bottom: 40px; font-weight: 300;}
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-primary);
+        }
 
-            .premium-btn { display: inline-flex; align-items: center; gap: 15px; background: var(--text-main); color: var(--bg); padding: 20px 50px; border-radius: 50px; font-size: 1.2rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.4s ease; overflow: hidden; position: relative; }
-            .premium-btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--accent-1); transform: scaleX(0); transform-origin: right; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1; }
-            .premium-btn:hover::before { transform: scaleX(1); transform-origin: left; }
-            .premium-btn span, .premium-btn i { position: relative; z-index: 2; transition: color 0.4s; }
-            .premium-btn:hover span, .premium-btn:hover i { color: white; }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--accent-primary);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
 
-            .social-links { display: flex; justify-content: center; gap: 30px; margin-top: 60px; }
-            .social-links a { color: var(--text-muted); font-size: 1.5rem; transition: all 0.3s; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--glass-bg); backdrop-filter: blur(10px); }
-            .social-links a:hover { color: var(--text-main); border-color: var(--text-main); transform: translateY(-5px); background: transparent; }
+        @media (max-width: 900px) {
+            .cursor-dot, .cursor-outline { display: none; }
+            * { cursor: auto !important; }
+        }
 
-            /* --- ECOSYSTEM CHAT UI (Dynamic Spatial Awareness) --- */
-            .chat-toggle-btn { 
-                position: fixed; bottom: 40px; right: 40px; 
-                background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); 
-                border: 1px solid var(--glass-border); color: var(--text-main); 
-                border-radius: 50%; width: 70px; height: 70px; font-size: 24px; 
-                cursor: grab; z-index: 1000; 
-                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease; 
-                box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-                display: flex; align-items: center; justify-content: center;
-                user-select: none;
+        /* --- 4. AMBIENT BACKGROUND GLOWS --- */
+        .ambient-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .ambient-glow { 
+            position: absolute; 
+            border-radius: 50%; 
+            filter: blur(140px); 
+            opacity: 0.4; 
+            animation: float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); 
+            will-change: transform;
+        }
+        
+        .glow-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: var(--accent-primary); }
+        .glow-2 { bottom: -20%; right: -10%; width: 70vw; height: 70vw; background: var(--accent-secondary); animation-delay: -5s; }
+        .glow-3 { top: 40%; left: 30%; width: 40vw; height: 40vw; background: var(--accent-tertiary); opacity: 0.2; animation-delay: -10s; }
+
+        @keyframes float { 
+            0% { transform: translate(0, 0) scale(1); } 
+            50% { transform: translate(5vw, 5vh) scale(1.1); }
+            100% { transform: translate(10vw, 10vh) scale(1.2); } 
+        }
+
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* --- 5. INTRO SCREEN --- */
+        #intro-screen { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            height: 100dvh; /* Dynamic viewport fixes mobile top/bottom gaps permanently */
+            background: var(--bg-color); 
+            z-index: 10000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1); 
+        }
+        
+        .intro-text-wrapper { overflow: hidden; }
+        
+        #intro-screen h1 { 
+            font-family: 'Syne', sans-serif; 
+            font-size: clamp(3rem, 6vw, 6rem); 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: -0.02em; 
+            line-height: 1; 
+            text-align: center; 
+            transform: translateY(100%); 
+            animation: slideUpReveal 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
+        
+        .click-prompt { 
+            margin-top: 40px; 
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em; 
+            letter-spacing: 4px; 
+            text-transform: uppercase; 
+            color: var(--accent-primary); 
+            opacity: 0; 
+            animation: fadeIn 2s ease forwards 1s; 
+            pointer-events: none;
+        }
+
+        .click-prompt:hover {
+            color: var(--text-main);
+        }
+        
+        /* Subtle slide up animation */
+        .intro-hidden { 
+            transform: translateY(-100%); 
+            pointer-events: none; 
+        }
+
+        @keyframes slideUpReveal { to { transform: translateY(0); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* --- 6. FLOATING NAVIGATION BAR --- */
+        header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 800px;
+            transition: var(--transition-medium);
+        }
+
+        .nav-container {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-pill);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .nav-links { display: flex; gap: 20px; list-style: none; }
+        
+        .nav-links li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: var(--radius-pill);
+            transition: var(--transition-fast);
+        }
+
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--text-main);
+            background: var(--glass-bg-hover);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-container { justify-content: center; }
+        }
+
+        /* --- 7. GLOBAL LAYOUT & UTILITIES --- */
+        .section-container { 
+            width: 100%;
+            max-width: 1300px; 
+            margin: 0 auto; 
+            padding: var(--section-padding-y) var(--section-padding-x); 
+            position: relative;
+            z-index: 10;
+        }
+        
+        .section-title { 
+            font-family: 'Syne', sans-serif; 
+            font-size: clamp(1.8rem, 5vw, 4rem); 
+            font-weight: 800; 
+            margin-bottom: 80px; 
+            text-transform: uppercase; 
+            letter-spacing: -0.02em; 
+            text-align: center; 
+            position: relative;
+            line-height: 1.1;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--accent-primary);
+            border-radius: 2px;
+        }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal.delay-1 { transition-delay: 0.1s; }
+        .reveal.delay-2 { transition-delay: 0.2s; }
+        .reveal.delay-3 { transition-delay: 0.3s; }
+        .reveal.delay-4 { transition-delay: 0.4s; }
+
+        /* --- 8. HERO SECTION --- */
+        .hero { 
+            position: relative; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 0 var(--section-padding-x); 
+            overflow: hidden;
+        }
+        
+        .hero-content { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            width: 100%; 
+            max-width: 1300px; 
+            z-index: 10; 
+            gap: 60px; 
+            margin-top: 5vh;
+        }
+
+        .hero-text { flex: 1.2; }
+        
+        .dost-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--accent-tertiary);
+            padding: 8px 16px;
+            border-radius: var(--radius-pill);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-text h1 { 
+            font-family: 'Syne', sans-serif; 
+            font-size: clamp(2.5rem, 8vw, 7rem); 
+            font-weight: 800; 
+            line-height: 1; 
+            letter-spacing: -0.04em; 
+            margin-bottom: 30px; 
+            text-transform: uppercase; 
+        }
+        
+        .hero-text h1 span { 
+            color: transparent; 
+            -webkit-text-stroke: 1px var(--text-main); 
+            display: block; 
+        }
+        
+        .hero-text p { 
+            font-size: clamp(1.1rem, 2vw, 1.25rem); 
+            color: var(--text-muted); 
+            max-width: 550px; 
+            font-weight: 300; 
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .terminal-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            padding: 15px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-primary);
+            max-width: 450px;
+            display: inline-block;
+        }
+        
+        .terminal-prefix { color: var(--accent-tertiary); }
+        .typewriter { border-right: 2px solid var(--accent-primary); padding-right: 5px; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        .hero-visual { 
+            flex: 0.8;
+            position: relative; 
+            width: 100%; 
+            max-width: 500px; 
+            aspect-ratio: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        
+        .visual-frame { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; 
+            border: 1px solid var(--glass-border-highlight); 
+            animation: morph 15s linear infinite; 
+            box-shadow: inset 0 0 40px rgba(59, 130, 246, 0.1);
+        }
+        
+        .profile-pic { 
+            width: 85%; 
+            height: 85%; 
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
+            object-fit: cover; 
+            animation: morph 15s linear infinite reverse; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8); 
+            z-index: 2;
+        }
+        
+        @keyframes morph { 
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; } 
+            34% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; } 
+            67% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; } 
+            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; } 
+        }
+
+        .scroll-down { 
+            position: absolute; 
+            bottom: 40px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: var(--text-muted); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 10px; 
+            opacity: 0.6; 
+            transition: var(--transition-fast);
+        }
+        
+        .scroll-down:hover { opacity: 1; color: var(--text-main); }
+        .scroll-line { width: 1px; height: 50px; background: var(--glass-border); position: relative; overflow: hidden; }
+        .scroll-line::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: var(--accent-primary); animation: scrollLine 2s infinite ease-in-out; }
+        
+        @keyframes scrollLine { 0% { transform: translateY(-100%); } 100% { transform: translateY(200%); } }
+
+        /* --- 9. BENTO GRID --- */
+        .bento-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: var(--grid-gap); 
+            grid-auto-rows: minmax(280px, auto); 
+            perspective: 1000px;
+        }
+        
+        .glass-card { 
+            background: var(--glass-bg); 
+            backdrop-filter: var(--glass-blur); 
+            -webkit-backdrop-filter: var(--glass-blur); 
+            border: 1px solid var(--glass-border); 
+            border-radius: var(--radius-lg); 
+            padding: var(--card-padding); 
+            position: relative; 
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            transform-style: preserve-3d;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease; 
+        }
+        
+        .card-content { transform: translateZ(30px); pointer-events: none; }
+
+        .glass-card:hover { border-color: var(--glass-border-highlight); box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.02); }
+
+        .span-2 { grid-column: span 2; }
+        .span-full { grid-column: 1 / -1; }
+
+        .card-icon { font-size: 2.5rem; color: var(--accent-primary); margin-bottom: 24px; display: inline-block; }
+        .glass-card h4 { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-secondary); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+        .glass-card h3 { font-family: 'Syne', sans-serif; font-size: 1.8rem; margin-bottom: 16px; line-height: 1.2; font-weight: 700; }
+        .glass-card p { color: var(--text-muted); font-size: 1.05rem; font-weight: 300; line-height: 1.6; }
+
+        .card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 24px; }
+        .tag { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; color: #ccc; font-family: 'JetBrains Mono', monospace; }
+
+        /* --- 10. TIMELINE / TRAJECTORY --- */
+        .timeline-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+        .timeline { border-left: 2px solid var(--glass-border); padding-left: 30px; margin-left: 15px; }
+        .timeline-item { position: relative; margin-bottom: 50px; }
+        .timeline-item::before { content: ''; position: absolute; left: -37px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg-color); border: 2px solid var(--accent-primary); box-shadow: 0 0 10px var(--accent-glow); transition: var(--transition-fast); }
+        .timeline-item:hover::before { background: var(--accent-primary); transform: scale(1.2); }
+        .timeline-date { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-primary); letter-spacing: 1px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+        .timeline-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; margin-bottom: 8px; color: white; font-weight: 600; }
+        .timeline-subtitle { font-size: 1rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 300; }
+
+        /* --- 11. TECHNICAL SKILLS --- */
+        .skills-wrapper { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; max-width: 1000px; margin: 0 auto; }
+        .skill-pill { position: relative; overflow: hidden; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-pill); backdrop-filter: blur(10px); min-width: 240px; height: 60px; transition: border-color var(--transition-fast); }
+        .skill-pill:hover { border-color: var(--glass-border-highlight); }
+        .skill-content { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s; font-weight: 500; font-size: 1.05rem; }
+        .skill-content i { color: var(--text-muted); font-size: 1.2rem; }
+        .skill-rating { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--text-main); color: var(--bg-color); display: flex; align-items: center; justify-content: center; gap: 6px; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: var(--radius-pill); font-size: 0.9rem; }
+        .skill-rating .star { color: var(--bg-color); opacity: 0.3; }
+        .skill-rating .star.filled { opacity: 1; }
+        .skill-pill:hover .skill-content { transform: translateY(-100%); opacity: 0; }
+        .skill-pill:hover .skill-rating { transform: translateY(0); }
+        
+        /* --- 12. CREATIVE ARCHIVE (Filterable Masonry Grid) --- */
+        .filter-controls { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 40px; }
+        .filter-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-muted); padding: 10px 24px; border-radius: 50px; font-family: 'Inter', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; }
+        .filter-btn:hover { color: var(--text-main); border-color: rgba(255,255,255,0.2); }
+        .filter-btn.active { background: var(--accent-primary); color: var(--bg-color); border-color: var(--accent-primary); font-weight: 600; }
+
+        .masonry-grid { column-count: 3; column-gap: 20px; width: 100%; transition: all 0.5s ease; }
+        .masonry-item { break-inside: avoid; margin-bottom: 20px; position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--glass-border); transition: transform 0.4s ease, opacity 0.4s ease; transform: scale(1); opacity: 1; }
+        .masonry-item.hide { display: none; }
+        .masonry-item img { width: 100%; display: block; border-radius: 16px; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .masonry-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 20px; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 70%, transparent 100%); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; justify-content: flex-end; }
+        .masonry-item:hover .masonry-overlay { transform: translateY(0); }
+        .masonry-item:hover img { transform: scale(1.05); }
+
+        .masonry-overlay h4 { color: var(--accent-primary); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; font-weight: 600; }
+        .masonry-overlay h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; color: var(--text-main); margin-bottom: 2px; }
+        .masonry-overlay p { color: #aaa; font-size: 0.85rem; font-weight: 300; }
+
+        @media (max-width: 1024px) { .masonry-grid { column-count: 2; } }
+        @media (max-width: 600px) { .masonry-grid { column-count: 1; } }
+
+        /* --- 13. CERTIFICATION CAROUSEL --- */
+        .cert-section { overflow: hidden; padding: 8vh 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); margin: 5vh 0; background: rgba(0,0,0,0.3); position: relative; }
+        .cert-section::before, .cert-section::after { content: ''; position: absolute; top: 0; width: 15vw; height: 100%; z-index: 5; pointer-events: none; }
+        .cert-section::before { left: 0; background: linear-gradient(to right, var(--bg-color), transparent); }
+        .cert-section::after { right: 0; background: linear-gradient(to left, var(--bg-color), transparent); }
+        .carousel-track { display: flex; width: max-content; animation: ultraScroll 35s linear infinite; align-items: center; }
+        .carousel-track:hover { animation-play-state: paused; }
+        .cert-img { height: 260px; width: auto; margin-right: 40px; border-radius: var(--radius-md); filter: grayscale(100%) opacity(0.4); transition: all 0.5s ease; border: 1px solid var(--glass-border); }
+        .cert-img:hover { filter: grayscale(0%) opacity(1); transform: scale(1.03); z-index: 10; box-shadow: 0 20px 40px rgba(0,0,0,0.8); border-color: var(--glass-border-highlight); }
+        @keyframes ultraScroll { to { transform: translateX(-50%); } }
+
+        /* --- 14. CONTACT & FOOTER SECTION --- */
+        .contact-section { text-align: center; padding: 15vh var(--section-padding-x) 10vh; position: relative; }
+        .huge-text { font-family: 'Syne', sans-serif; font-size: clamp(3rem, 10vw, 9rem); font-weight: 800; line-height: 0.9; letter-spacing: -0.04em; margin-bottom: 30px; }
+        .contact-subtext { color: var(--text-muted); font-size: clamp(1rem, 2vw, 1.2rem); margin-bottom: 50px; font-weight: 300; font-family: 'JetBrains Mono', monospace; }
+
+        .premium-btn { display: inline-flex; align-items: center; gap: 15px; background: var(--text-main); color: var(--bg-color); padding: 20px 50px; border-radius: var(--radius-pill); font-size: 1.2rem; font-weight: 600; text-decoration: none; border: none; transition: all 0.4s ease; overflow: hidden; position: relative; }
+        .premium-btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--accent-primary); transform: scaleX(0); transform-origin: right; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1; }
+        .premium-btn:hover::before { transform: scaleX(1); transform-origin: left; }
+        .premium-btn span, .premium-btn i { position: relative; z-index: 2; transition: color 0.4s; }
+        .premium-btn:hover span, .premium-btn:hover i { color: white; }
+
+        .social-links { display: flex; justify-content: center; gap: 30px; margin-top: 80px; }
+        .social-links a { color: var(--text-muted); font-size: 1.5rem; transition: all 0.3s; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--glass-bg); backdrop-filter: blur(10px); text-decoration: none; }
+        .social-links a:hover { color: var(--text-main); border-color: var(--text-main); transform: translateY(-5px); background: rgba(255,255,255,0.05); }
+
+        /* --- 15. ECOSYSTEM CHAT UI (Dynamic Spatial Awareness) --- */
+        .chat-toggle-btn { 
+            position: fixed; bottom: 40px; right: 40px; 
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); 
+            border: 1px solid var(--glass-border); color: var(--text-main); 
+            border-radius: 50%; width: 70px; height: 70px; font-size: 24px; 
+            cursor: grab; z-index: 1000; 
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            display: flex; align-items: center; justify-content: center;
+            user-select: none;
+        }
+        .chat-toggle-btn:active { cursor: grabbing; box-shadow: 0 5px 15px rgba(0,0,0,0.8); }
+
+        .chat-container { 
+            position: fixed; width: 380px; 
+            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); 
+            border-radius: 24px; border: 1px solid var(--glass-border); 
+            display: flex; flex-direction: column; overflow: hidden; z-index: 1000; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8); 
+            visibility: hidden; opacity: 0; pointer-events: none;
+            transform: translateY(20px) scale(0.95); 
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s; 
+        }
+        .chat-container.active { 
+            visibility: visible; opacity: 1; pointer-events: auto; 
+            transform: translateY(0) scale(1); 
+        }
+
+        .chat-header { padding: 25px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; cursor: grab; }
+        .chat-header:active { cursor: grabbing; }
+        .chat-header h3 { font-family: 'Syne', sans-serif; margin: 0; font-size: 1.2em; display: flex; align-items: center; gap: 10px; pointer-events: none; }
+        .chat-close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; transition: color 0.3s; z-index: 10; }
+        .chat-close-btn:hover { color: var(--text-main); }
+
+        .chat-messages { padding: 25px; height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .message { max-width: 85%; padding: 15px 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 300; line-height: 1.5; word-wrap: break-word;}
+        .bot-message { background: rgba(255,255,255,0.05); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--glass-border); }
+        .user-message { background: var(--text-main); color: var(--bg-color); align-self: flex-end; border-bottom-right-radius: 4px; }
+
+        .chat-input-area { display: flex; padding: 20px; border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); }
+        .chat-input-area input { flex: 1; padding: 15px 20px; border-radius: 30px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); color: white; outline: none; transition: border-color 0.3s; font-family: 'Inter', sans-serif; }
+        .chat-input-area input:focus { border-color: rgba(255,255,255,0.3); }
+        .chat-input-area button { background: var(--text-main); color: var(--bg-color); border: none; width: 50px; height: 50px; border-radius: 50%; margin-left: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.3s; }
+        .chat-input-area button:hover { transform: scale(1.05); }
+
+        /* --- 16. MODAL --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-box { background: rgba(15, 15, 15, 0.9); border: 1px solid var(--glass-border); width: 90%; max-width: 550px; border-radius: 24px; padding: 50px; transform: translateY(40px) scale(0.95); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
+        .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
+        .modal-box h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 30px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); color: white; outline: none; margin-bottom: 20px; font-family: 'Inter', sans-serif; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--text-main); }
+        .submit-btn { width: 100%; background: var(--text-main); color: var(--bg-color); border: none; padding: 18px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: transform 0.3s; }
+        .submit-btn:hover { transform: translateY(-2px); }
+        .close-modal { position: absolute; top: 25px; right: 25px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+
+        /* --- 17. RESPONSIVE DESIGN (Media Queries) --- */
+        @media (max-width: 1100px) {
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .span-2 { grid-column: span 2; }
+        }
+
+        @media (max-width: 900px) {
+            .hero-content { flex-direction: column-reverse; text-align: center; gap: 50px; margin-top: 10vh; }
+            .hero-text { align-items: center; }
+            .hero-text p { margin: 0 auto 40px auto; }
+            .hero-visual { width: 70vw; max-width: 400px; }
+            .bento-grid { grid-template-columns: 1fr; }
+            .span-2 { grid-column: 1 / -1; }
+            .timeline-wrapper { grid-template-columns: 1fr; gap: 40px; }
+        }
+
+        @media (max-width: 600px) {
+            :root {
+                --section-padding-y: 80px;
+                --card-padding: 30px 20px;
             }
-            .chat-toggle-btn:active { cursor: grabbing; box-shadow: 0 5px 15px rgba(0,0,0,0.8); }
+            .scroll-down { display: none; }
+            #intro-screen h1 { font-size: 12vw; }
+            .section-title { font-size: clamp(1.8rem, 8vw, 2.5rem); margin-bottom: 50px; }
+            .dost-badge { font-size: 0.75rem; padding: 6px 12px; }
+            .hero-text h1 { font-size: clamp(2.5rem, 12vw, 4rem); margin-bottom: 15px; }
+            .hero-text p { font-size: 1rem; }
+            .hero-visual { width: 85vw; }
+            .glass-card h3 { font-size: 1.5rem; }
+            .timeline { margin-left: 5px; padding-left: 20px; }
+            .timeline-item::before { left: -26px; }
+            .skill-pill { min-width: 100%; max-width: 350px; }
+            .cert-img { height: 200px; margin-right: 20px; }
+            .premium-btn { padding: 15px 30px; font-size: 1rem; }
+            .social-links gap { gap: 15px; }
+        }
 
-            .chat-container { 
-                position: fixed; width: 380px; 
-                background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); 
-                border-radius: 24px; border: 1px solid var(--glass-border); 
-                display: flex; flex-direction: column; overflow: hidden; z-index: 1000; 
-                box-shadow: 0 30px 60px rgba(0,0,0,0.8); 
+    </style>
+</head>
+<body class="locked">
 
-                /* Re-engineered display logic for accurate geometry measurement */
-                visibility: hidden; opacity: 0; pointer-events: none;
-                transform: translateY(20px) scale(0.95); 
-                transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s; 
-            }
-            .chat-container.active { 
-                visibility: visible; opacity: 1; pointer-events: auto; 
-                transform: translateY(0) scale(1); 
-            }
+    <!-- Custom Cursor Elements -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
 
-            .chat-header { padding: 25px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; cursor: grab; }
-            .chat-header:active { cursor: grabbing; }
-            .chat-header h3 { font-family: 'Syne', sans-serif; margin: 0; font-size: 1.2em; display: flex; align-items: center; gap: 10px; pointer-events: none; }
-            .chat-close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; transition: color 0.3s; z-index: 10; }
-            .chat-close-btn:hover { color: var(--text-main); }
-
-            .chat-messages { padding: 25px; height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-            .message { max-width: 85%; padding: 15px 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 300; line-height: 1.5; word-wrap: break-word;}
-            .bot-message { background: rgba(255,255,255,0.05); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--glass-border); }
-            .user-message { background: var(--text-main); color: var(--bg); align-self: flex-end; border-bottom-right-radius: 4px; }
-
-            .chat-input-area { display: flex; padding: 20px; border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); }
-            .chat-input-area input { flex: 1; padding: 15px 20px; border-radius: 30px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); color: white; outline: none; transition: border-color 0.3s; font-family: 'Inter', sans-serif; }
-            .chat-input-area input:focus { border-color: rgba(255,255,255,0.3); }
-            .chat-input-area button { background: var(--text-main); color: var(--bg); border: none; width: 50px; height: 50px; border-radius: 50%; margin-left: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.3s; }
-            .chat-input-area button:hover { transform: scale(1.05); }
-
-            /* --- MODAL --- */
-            .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
-            .modal-overlay.active { opacity: 1; pointer-events: auto; }
-            .modal-box { background: rgba(15, 15, 15, 0.9); border: 1px solid var(--glass-border); width: 90%; max-width: 550px; border-radius: 24px; padding: 50px; transform: translateY(40px) scale(0.95); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
-            .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
-            .modal-box h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 30px; }
-            .form-group input, .form-group textarea { width: 100%; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); color: white; outline: none; margin-bottom: 20px; font-family: 'Inter', sans-serif; transition: border-color 0.3s; }
-            .form-group input:focus, .form-group textarea:focus { border-color: var(--text-main); }
-            .submit-btn { width: 100%; background: var(--text-main); color: var(--bg); border: none; padding: 18px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: transform 0.3s; }
-            .submit-btn:hover { transform: translateY(-2px); }
-            .close-modal { position: absolute; top: 25px; right: 25px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
-
-            @media (max-width: 1024px) { .masonry-grid { column-count: 2; } }
-            @media (max-width: 900px) {
-                .hero-content { flex-direction: column-reverse; text-align: center; gap: 40px; }
-                .hero-text h1 { font-size: 12vw; }
-                .hero-visual { width: 70vw; }
-                .bento-grid { grid-template-columns: 1fr; }
-                .span-2 { grid-column: 1 / -1; }
-                .timeline-wrapper { grid-template-columns: 1fr; }
-            }
-            @media (max-width: 600px) { .masonry-grid { column-count: 1; } }
-        </style>
-    </head>
-    <body class="locked">
-
+    <!-- Ambient Background Texture & Glows -->
+    <div class="ambient-wrapper">
+        <div class="noise-overlay"></div>
         <div class="ambient-glow glow-1"></div>
         <div class="ambient-glow glow-2"></div>
         <div class="ambient-glow glow-3"></div>
+    </div>
 
-        <div id="intro-screen">
-            <div class="intro-text-wrapper">
-                <h1>SISTONA.</h1>
-            </div>
-            <div class="click-prompt">Click to enter</div>
+    <!-- Intro Loading Screen (Cinematic Slide-Up) -->
+    <div id="intro-screen">
+        <div class="intro-text-wrapper">
+            <h1>SISTONA.</h1>
         </div>
+        <div class="click-prompt">Click to enter</div>
+    </div>
 
-        <section class="hero">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1 class="reveal">John Ashley<br><span>Sistona</span></h1>
-                    <p class="reveal delay-1">Bridging the gap between hardware architecture, intuitive UI/UX design, and complex software systems. Based in Iligan City.</p>
+    <!-- Floating Navigation Bar -->
+    <header id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">JS.</a>
+            <ul class="nav-links">
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#leadership" class="nav-link">Leadership</a></li>
+                <li><a href="#timeline" class="nav-link">Timeline</a></li>
+                <li><a href="#stack" class="nav-link">Stack</a></li>
+                <li><a href="#archive" class="nav-link">Archive</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Section: Hero -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="dost-badge reveal">
+                    <i class="fas fa-microscope"></i> DOST Scholar
                 </div>
-                <div class="hero-visual reveal delay-2">
-                    <div class="visual-frame"></div>
-                    <img src="/static/profile.jpg" alt="John Ashley S. Sistona" class="profile-pic" onerror="this.src='https://via.placeholder.com/500/1e293b/e2e8f0?text=JS'">
+                <h1 class="reveal delay-1">John Ashley<br><span>Sistona</span></h1>
+                
+                <!-- Typing Effect Container -->
+                <div class="reveal delay-2" style="margin-bottom: 20px;">
+                    <div class="terminal-box">
+                        <span class="terminal-prefix">root@sistona:~#</span> 
+                        <span class="typewriter" id="typewriter-text"></span>
+                    </div>
+                </div>
+
+                <p class="reveal delay-3">Bridging the gap between hardware architecture, intuitive UI/UX design, and complex software systems. Based in Brgy. Luinab, Iligan City.</p>
+            </div>
+            
+            <div class="hero-visual reveal delay-4">
+                <div class="visual-frame"></div>
+                <!-- Fallback image provided if static/profile.jpg is missing -->
+                <img src="/static/profile.jpg" alt="John Ashley S. Sistona" class="profile-pic" onerror="this.src='https://via.placeholder.com/500/111111/f5f5f7?text=JS'">
+            </div>
+        </div>
+        
+        <div class="scroll-down reveal delay-4">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Section: Projects & Research (Bento Grid) -->
+    <div class="section-container" id="projects">
+        <h2 class="section-title reveal">Projects & Research</h2>
+        <div class="bento-grid">
+
+            <!-- Card 1: RT-Sync -->
+            <div class="glass-card span-2 reveal tilt-card">
+                <div class="card-content">
+                    <i class="fas fa-microchip card-icon"></i>
+                    <h4>2026 Capstone Architecture</h4>
+                    <h3>RT-Sync System</h3>
+                    <p>A Hard Real-Time System focusing on RFID-actuated mechanisms to drastically improve efficiency and data accuracy in high-traffic environments. Architected utilizing advanced microcontroller logic.</p>
+                    <div class="card-tags">
+                        <span class="tag">Embedded Systems</span>
+                        <span class="tag">RFID</span>
+                        <span class="tag">C++</span>
+                    </div>
                 </div>
             </div>
-            <div class="scroll-down reveal delay-3">
-                <span>Scroll</span>
-                <div class="scroll-line"></div>
+
+            <!-- Card 2: Protoreaster nodosus -->
+            <div class="glass-card reveal delay-1 tilt-card">
+                <div class="card-content">
+                    <i class="fas fa-dna card-icon"></i>
+                    <h4>Biological Research</h4>
+                    <h3>Sea Star Bactericidal Evaluation</h3>
+                    <p>Investigated the bactericidal activity of the coelomic fluid of Protoreaster nodosus (Sea Star), contributing to alternative biological research data.</p>
+                    <div class="card-tags">
+                        <span class="tag">Research</span>
+                        <span class="tag">Data Analysis</span>
+                    </div>
+                </div>
             </div>
-        </section>
 
-        <div class="section-container">
-            <h2 class="section-title reveal">Select Works & Leadership</h2>
-            <div class="bento-grid">
-
-                <div class="glass-card span-2 reveal">
+            <!-- Card 3: Jeepney Tracking -->
+            <div class="glass-card reveal tilt-card">
+                <div class="card-content">
                     <i class="fas fa-route card-icon"></i>
                     <h4>2021 — 2022</h4>
                     <h3>Real-Time Jeepney Tracking App</h3>
-                    <p>Served as Project Lead for a team of four. Managed schedules, delegated architecture tasks, and ensured project milestones were met for this high-impact localized transit application.</p>
+                    <p>Served as Project Lead for a localized transit application. Delegated tasks, managed team timelines, and designed initial UI structures.</p>
+                    <div class="card-tags">
+                        <span class="tag">Project Management</span>
+                        <span class="tag">UI/UX</span>
+                    </div>
                 </div>
+            </div>
 
-                <div class="glass-card reveal delay-1">
+            <!-- Card 4: PRISM Lab -->
+            <div class="glass-card span-2 reveal delay-1 tilt-card">
+                <div class="card-content">
+                    <i class="fas fa-flask card-icon"></i>
+                    <h4>Immersion Program</h4>
+                    <h3>PRISM Laboratory Operations</h3>
+                    <p>Conducted immersion at MSU-IIT PRISM, actively assisting with rigorous laboratory procedures, safety protocols, and technical equipment operations.</p>
+                    <div class="card-tags">
+                        <span class="tag">Lab Equipment</span>
+                        <span class="tag">Safety Protocols</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Section: Leadership & Community -->
+    <div class="section-container" id="leadership">
+        <h2 class="section-title reveal">Leadership & Community</h2>
+        <div class="bento-grid">
+            
+            <!-- Card 5: ICpEP.se Mayor -->
+            <div class="glass-card span-full reveal tilt-card" style="padding-top: 50px; padding-bottom: 50px;">
+                <div class="card-content" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <i class="fas fa-users card-icon" style="font-size: 3rem;"></i>
+                    <h4>2025 — 2026 Academic Year</h4>
+                    <h3 style="font-size: 2.5rem; margin-bottom: 20px;">Mayor, ICpEP.se</h3>
+                    <p style="max-width: 800px; font-size: 1.15rem;">Elected Chapter President (Mayor) of the Institute of Computer Engineers of the Philippines - Student Edition. Leading an executive team of 15 officers and managing a 177-member organization. Successfully executing over 15 major programs, including the COE Summit, Software Freedom Day, and Collaborative Online International Learning (COIL).</p>
+                    <div class="card-tags" style="justify-content: center; margin-top: 30px;">
+                        <span class="tag">Leadership</span>
+                        <span class="tag">Event Organization</span>
+                        <span class="tag">Public Speaking</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: UI/UX Intern -->
+            <div class="glass-card span-2 reveal tilt-card">
+                <div class="card-content">
                     <i class="fab fa-figma card-icon"></i>
                     <h4>2020</h4>
                     <h3>Junior UI/UX Intern</h3>
-                    <p>MSU-IIT Multimedia Center. Developed interactive prototypes and high-quality designs, collaborating closely with industry experts.</p>
+                    <p>MSU-IIT Multimedia Center. Developed interactive prototypes and high-quality designs using Figma and Photoshop, collaborating closely with industry experts.</p>
+                    <div class="card-tags">
+                        <span class="tag">Figma</span>
+                        <span class="tag">Photoshop</span>
+                    </div>
                 </div>
-
-                <div class="glass-card reveal">
-                    <i class="fas fa-microchip card-icon"></i>
-                    <h4>2026 Capstone</h4>
-                    <h3>RT-Sync System</h3>
-                    <p>Hard Real-Time System architecture utilizing RFID-actuated mechanisms optimized for high-traffic environments.</p>
-                </div>
-
-                <div class="glass-card span-2 reveal delay-1">
-                    <i class="fas fa-users card-icon"></i>
-                    <h4>2025 — Ongoing</h4>
-                    <h3>Mayor, ICpEP.se</h3>
-                    <p>Elected Mayor leading 192 members to execute 15+ major programs. Ensuring operational excellence, high engagement, and spearheading the COE Summit.</p>
-                </div>
-
             </div>
+
+            <!-- Card 7: Red Cross -->
+            <div class="glass-card reveal delay-1 tilt-card">
+                <div class="card-content">
+                    <i class="fas fa-first-aid card-icon" style="color: #ef4444;"></i>
+                    <h4>2018 — 2020</h4>
+                    <h3>Red Cross Youth Volunteer</h3>
+                    <p>Emergency Response Volunteer trained in basic first aid, safety assessment, and rapid response deployment.</p>
+                    <div class="card-tags">
+                        <span class="tag">First Aid</span>
+                        <span class="tag">Emergency Response</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
+    </div>
 
-        <div class="section-container">
-            <h2 class="section-title reveal">Trajectory & Milestones</h2>
-            <div class="timeline-wrapper">
+    <!-- Section: Trajectory & Milestones -->
+    <div class="section-container" id="timeline">
+        <h2 class="section-title reveal">Trajectory & Milestones</h2>
+        <div class="timeline-wrapper">
 
-                <div class="reveal">
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-date">2023 — 2027</div>
-                            <div class="timeline-title">BS Computer Engineering</div>
-                            <div class="timeline-subtitle">Mindanao State University - Iligan Institute of Technology</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">2023</div>
-                            <div class="timeline-title">Codechum Trainee</div>
-                            <div class="timeline-subtitle">Rigorous Java, Data Structures, and Algorithms immersion.</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">2022 — 2023</div>
-                            <div class="timeline-title">Academic Tutor (4.8/5 Rating)</div>
-                            <div class="timeline-subtitle">EduHelp. Global specialized math and programming support.</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">2018</div>
-                            <div class="timeline-title">Programming Certifications</div>
-                            <div class="timeline-subtitle">Sololearn. Mastered syntax in Python, C++, and C.</div>
-                        </div>
+            <!-- Column 1: Academics & Training -->
+            <div class="reveal">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">2023 — 2027</div>
+                        <div class="timeline-title">BS Computer Engineering</div>
+                        <div class="timeline-subtitle">Mindanao State University - Iligan Institute of Technology</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2023</div>
+                        <div class="timeline-title">Codechum Trainee</div>
+                        <div class="timeline-subtitle">Rigorous Java, Data Structures, and Algorithms immersion.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2022 — 2023</div>
+                        <div class="timeline-title">Academic Tutor (4.8/5 Rating)</div>
+                        <div class="timeline-subtitle">EduHelp. Global specialized math and programming support.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">2018</div>
+                        <div class="timeline-title">Programming Certifications</div>
+                        <div class="timeline-subtitle">Sololearn. Mastered syntax in Python, C++, and C.</div>
                     </div>
                 </div>
-
-                <div class="reveal delay-1">
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-date">Award</div>
-                            <div class="timeline-title">Inter-High Machine Design</div>
-                            <div class="timeline-subtitle">Ranked Top 5 among national competitors.</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">Award</div>
-                            <div class="timeline-title">Best Robotics Project</div>
-                            <div class="timeline-subtitle">MSU-IIT Robotics Training.</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">Award</div>
-                            <div class="timeline-title">Regional Champion</div>
-                            <div class="timeline-subtitle">Math and Science Olympiad.</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">Community</div>
-                            <div class="timeline-title">Red Cross Youth</div>
-                            <div class="timeline-subtitle">Emergency Response Volunteer trained in basic first aid and safety.</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="section-container">
-            <h2 class="section-title reveal">Technical Core</h2>
-            <div class="skills-wrapper">
-
-                <div class="skill-pill reveal">
-                    <div class="skill-content"><i class="fas fa-layer-group"></i> Verilog & FPGA</div>
-                    <div class="skill-rating">
-                        <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i>
-                    </div>
-                </div>
-
-                <div class="skill-pill reveal delay-1">
-                    <div class="skill-content"><i class="fas fa-server"></i> Intel Quartus</div>
-                    <div class="skill-rating">
-                        <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i>
-                    </div>
-                </div>
-
-                <div class="skill-pill reveal delay-2">
-                    <div class="skill-content"><i class="fas fa-memory"></i> Arduino & ESP32</div>
-                    <div class="skill-rating">
-                        <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
-                    </div>
-                </div>
-
-                <div class="skill-pill reveal delay-3">
-                    <div class="skill-content"><i class="fas fa-cogs"></i> 8051 Microcontrollers</div>
-                    <div class="skill-rating">
-                        <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
-                    </div>
-                </div>
-
-                <div class="skill-pill reveal">
-                    <div class="skill-content"><i class="fab fa-figma"></i> Figma Prototyping</div>
-                    <div class="skill-rating">
-                        <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
-                    </div>
-                </div>
-
-                <div class="skill-pill reveal delay-1">
-                    <div class="skill-content"><i class="fas fa-palette"></i> Photoshop & Canva</div>
-                    <div class="skill-rating">
-                        <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
-                    </div>
-                </div>
-
-                <div class="skill-pill reveal delay-2">
-                    <div class="skill-content"><i class="fab fa-python"></i> Python & Django</div>
-                    <div class="skill-rating">
-                        <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
-                    </div>
-                </div>
-
-                <div class="skill-pill reveal delay-3">
-                    <div class="skill-content"><i class="fab fa-java"></i> Java</div>
-                    <div class="skill-rating">
-                        <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
-                    </div>
-                </div>
-
-                <div class="skill-pill reveal">
-                    <div class="skill-content"><i class="fas fa-terminal"></i> C</div>
-                    <div class="skill-rating">
-                        <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
-                    </div>
-                </div>
-
-                <div class="skill-pill reveal delay-1">
-                    <div class="skill-content"><i class="fas fa-code"></i> C++</div>
-                    <div class="skill-rating">
-                        <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- NEW SECTION: Creative Archive (Filterable Masonry Grid) -->
-        <div class="section-container" id="archive">
-            <h2 class="section-title reveal">Creative Archive</h2>
-            
-            <div class="filter-controls reveal delay-1">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="apparel">Apparel & Brand</button>
-                <button class="filter-btn" data-filter="cinema">Cinematography</button>
-                <button class="filter-btn" data-filter="uiux">UI / UX Web</button>
             </div>
 
-            <div class="masonry-grid reveal delay-2" id="masonry-grid">
-                
-                <div class="masonry-item apparel">
-                    <img src="/static/1.jpg" alt="Artwork 1" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=1.jpg'">
-                    <div class="masonry-overlay">
-                        <h4>Apparel & Brand</h4>
-                        <h3>Collection Title</h3>
-                        <p>Photoshop • Illustrator</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item uiux">
-                    <img src="/static/2.png" alt="Artwork 2" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=2.png'">
-                    <div class="masonry-overlay">
-                        <h4>UI / UX Web</h4>
-                        <h3>Interface Design</h3>
-                        <p>Figma</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item cinema">
-                    <img src="/static/3.png" alt="Artwork 3" onerror="this.src='https://via.placeholder.com/800x1200/111/444?text=3.png'">
-                    <div class="masonry-overlay">
-                        <h4>Cinematography</h4>
-                        <h3>Lighting Setup</h3>
-                        <p>Camera • Veo</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item apparel">
-                    <img src="/static/4.png" alt="Artwork 4" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=4.png'">
-                    <div class="masonry-overlay">
-                        <h4>Apparel & Brand</h4>
-                        <h3>Streetwear Concept</h3>
-                        <p>Graphic Design</p>
-                    </div>
-                </div>
-                
-                <div class="masonry-item uiux">
-                    <img src="/static/5.png" alt="Artwork 5" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=5.png'">
-                    <div class="masonry-overlay">
-                        <h4>UI / UX Web</h4>
-                        <h3>Mobile Application</h3>
-                        <p>Prototyping</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item cinema">
-                    <img src="/static/6.jpg" alt="Artwork 6" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=6.jpg'">
-                    <div class="masonry-overlay">
-                        <h4>Cinematography</h4>
-                        <h3>Scene Render</h3>
-                        <p>Color Grading</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item apparel">
-                    <img src="/static/7.jpg" alt="Artwork 7" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=7.jpg'">
-                    <div class="masonry-overlay">
-                        <h4>Apparel & Brand</h4>
-                        <h3>Jersey Mockup</h3>
-                        <p>Photoshop</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item uiux">
-                    <img src="/static/8.jpg" alt="Artwork 8" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=8.jpg'">
-                    <div class="masonry-overlay">
-                        <h4>UI / UX Web</h4>
-                        <h3>Dashboard</h3>
-                        <p>Figma</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item apparel">
-                    <img src="/static/9.png" alt="Artwork 9" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=9.png'">
-                    <div class="masonry-overlay">
-                        <h4>Apparel & Brand</h4>
-                        <h3>Brand Identity</h3>
-                        <p>Vector Art</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item uiux">
-                    <img src="/static/9.1.png" alt="Artwork 9.1" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=9.1.png'">
-                    <div class="masonry-overlay">
-                        <h4>UI / UX Web</h4>
-                        <h3>Wireframe</h3>
-                        <p>Prototyping</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item cinema">
-                    <img src="/static/9.2.png" alt="Artwork 9.2" onerror="this.src='https://via.placeholder.com/800x1200/111/444?text=9.2.png'">
-                    <div class="masonry-overlay">
-                        <h4>Cinematography</h4>
-                        <h3>Subject Focus</h3>
-                        <p>Visual Style</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item apparel">
-                    <img src="/static/10.png" alt="Artwork 10" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=10.png'">
-                    <div class="masonry-overlay">
-                        <h4>Apparel & Brand</h4>
-                        <h3>Merch Design</h3>
-                        <p>Graphic Layout</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item uiux">
-                    <img src="/static/10.1.jpg" alt="Artwork 10.1" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=10.1.jpg'">
-                    <div class="masonry-overlay">
-                        <h4>UI / UX Web</h4>
-                        <h3>Web Portal</h3>
-                        <p>Figma</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item apparel">
-                    <img src="/static/13.jpg" alt="Artwork 13" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=13.jpg'">
-                    <div class="masonry-overlay">
-                        <h4>Apparel & Brand</h4>
-                        <h3>Print Layout</h3>
-                        <p>Illustrator</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item uiux">
-                    <img src="/static/14.jpg" alt="Artwork 14" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=14.jpg'">
-                    <div class="masonry-overlay">
-                        <h4>UI / UX Web</h4>
-                        <h3>App Concept</h3>
-                        <p>UI Design</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item cinema">
-                    <img src="/static/15.png" alt="Artwork 15" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=15.png'">
-                    <div class="masonry-overlay">
-                        <h4>Cinematography</h4>
-                        <h3>Environment</h3>
-                        <p>Lighting</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item apparel">
-                    <img src="/static/16.png" alt="Artwork 16" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=16.png'">
-                    <div class="masonry-overlay">
-                        <h4>Apparel & Brand</h4>
-                        <h3>Typographic Print</h3>
-                        <p>Typography</p>
-                    </div>
-                </div>
-
-                <div class="masonry-item uiux">
-                    <img src="/static/17.png" alt="Artwork 17" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=17.png'">
-                    <div class="masonry-overlay">
-                        <h4>UI / UX Web</h4>
-                        <h3>Interactive Prototype</h3>
-                        <p>Figma</p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <section class="cert-section reveal">
-            <div class="carousel-container">
-                <div class="carousel-track">
-                    <img src="/static/cert1.jpg" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+1'">
-                    <img src="/static/cert2.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+2'">
-                    <img src="/static/cert3.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+3'">
-                    <img src="/static/cert4.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+4'">
-                    <img src="/static/cert5.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+5'">
-                    <img src="/static/cert6.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+6'">
-
-                    <img src="/static/cert1.jpg" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+1'">
-                    <img src="/static/cert2.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+2'">
-                    <img src="/static/cert3.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+3'">
-                    <img src="/static/cert4.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+4'">
-                    <img src="/static/cert5.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+5'">
-                    <img src="/static/cert6.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Award+6'">
-                </div>
-            </div>
-        </section>
-
-        <section class="contact-section">
-            <h2 class="huge-text reveal">LET'S BUILD<br>TOGETHER.</h2>
-            <p class="contact-subtext reveal">(+63) 991-481-5770 &nbsp;|&nbsp; sistonajohnashley@gmail.com</p>
+            <!-- Column 2: Awards & Extracurriculars -->
             <div class="reveal delay-1">
-                <button id="open-contact-btn" class="premium-btn">
-                    <span>Initiate Contact</span> <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-
-            <div class="social-links reveal delay-2">
-                <a href="https://www.linkedin.com/in/john-sistona-3589872a8/?locale=en_US" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-                <a href="https://web.facebook.com/john.sistona.2024" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://www.instagram.com/b.bu.qt/" target="_blank"><i class="fab fa-instagram"></i></a>
-            </div>
-        </section>
-
-        <div class="modal-overlay" id="contact-modal">
-            <div class="modal-box">
-                <button class="close-modal" id="close-contact-btn"><i class="fas fa-times"></i></button>
-                <h2>Start a dialogue</h2>
-                <form id="contact-form">
-                    <div class="form-group"><input type="text" id="sender-name" placeholder="Your Name" required></div>
-                    <div class="form-group"><textarea id="sender-msg" placeholder="Tell me about your project..." required></textarea></div>
-                    <button type="submit" class="submit-btn">Send Transmission</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="chat-toggle-btn" class="chat-toggle-btn"><i class="fas fa-sparkles"></i></div>
-
-        <div id="chat-container" class="chat-container">
-            <div class="chat-header" id="chat-drag-handle">
-                <h3><i class="fas fa-microchip"></i> System.AI</h3>
-                <button id="chat-close-btn" class="chat-close-btn"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="chat-messages" id="chat-messages">
-                <div class="message bot-message">
-                    Initializing interface... Welcome. I am John's AI construct. Ask me anything about his technical stack, leadership history, or recent projects.
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Award</div>
+                        <div class="timeline-title">Inter-High Machine Design</div>
+                        <div class="timeline-subtitle">Ranked Top 5 among national competitors.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Award</div>
+                        <div class="timeline-title">Best Robotics Project</div>
+                        <div class="timeline-subtitle">MSU-IIT Robotics Training.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Award</div>
+                        <div class="timeline-title">Regional Champion</div>
+                        <div class="timeline-subtitle">Math and Science Olympiad.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Creative Focus</div>
+                        <div class="timeline-title">Cinematography & AI Generation</div>
+                        <div class="timeline-subtitle">Advanced prompt engineering (Veo) and high-contrast lighting techniques.</div>
+                    </div>
                 </div>
             </div>
-            <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Query system...">
-                <button id="chat-send-btn"><i class="fas fa-arrow-up"></i></button>
+
+        </div>
+    </div>
+
+    <!-- Section: Technical Stack -->
+    <div class="section-container" id="stack">
+        <h2 class="section-title reveal">Technical Core</h2>
+        <div class="skills-wrapper">
+
+            <!-- Hardware & Systems -->
+            <div class="skill-pill reveal">
+                <div class="skill-content"><i class="fas fa-layer-group"></i> Verilog & FPGA</div>
+                <div class="skill-rating">
+                    <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i>
+                </div>
             </div>
+
+            <div class="skill-pill reveal delay-1">
+                <div class="skill-content"><i class="fas fa-server"></i> Intel Quartus</div>
+                <div class="skill-rating">
+                    <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i>
+                </div>
+            </div>
+
+            <div class="skill-pill reveal delay-2">
+                <div class="skill-content"><i class="fas fa-memory"></i> Arduino & ESP32</div>
+                <div class="skill-rating">
+                    <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
+                </div>
+            </div>
+
+            <div class="skill-pill reveal delay-3">
+                <div class="skill-content"><i class="fas fa-cogs"></i> 8051 Microcontrollers</div>
+                <div class="skill-rating">
+                    <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
+                </div>
+            </div>
+
+            <!-- Software & Languages -->
+            <div class="skill-pill reveal">
+                <div class="skill-content"><i class="fab fa-python"></i> Python & Django</div>
+                <div class="skill-rating">
+                    <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
+                </div>
+            </div>
+
+            <div class="skill-pill reveal delay-1">
+                <div class="skill-content"><i class="fab fa-java"></i> Java</div>
+                <div class="skill-rating">
+                    <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
+                </div>
+            </div>
+
+            <div class="skill-pill reveal delay-2">
+                <div class="skill-content"><i class="fas fa-terminal"></i> C</div>
+                <div class="skill-rating">
+                    <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
+                </div>
+            </div>
+
+            <div class="skill-pill reveal delay-3">
+                <div class="skill-content"><i class="fas fa-code"></i> C++</div>
+                <div class="skill-rating">
+                    <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
+                </div>
+            </div>
+
+            <!-- UI/UX & Design -->
+            <div class="skill-pill reveal">
+                <div class="skill-content"><i class="fab fa-figma"></i> Figma Prototyping</div>
+                <div class="skill-rating">
+                    <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star star"></i>
+                </div>
+            </div>
+
+            <div class="skill-pill reveal delay-1">
+                <div class="skill-content"><i class="fas fa-palette"></i> Photopea / Canva</div>
+                <div class="skill-rating">
+                    <i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i><i class="fas fa-star filled"></i>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- NEW SECTION: Creative Archive (Filterable Masonry Grid) -->
+    <div class="section-container" id="archive">
+        <h2 class="section-title reveal">Creative Archive</h2>
+        
+        <div class="filter-controls reveal delay-1">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="apparel">Apparel & Brand</button>
+            <button class="filter-btn" data-filter="cinema">Cinematography</button>
+            <button class="filter-btn" data-filter="uiux">UI / UX Web</button>
         </div>
 
-        <script>
-            // 1. Cinematic Intro
-            const introScreen = document.getElementById('intro-screen');
-            introScreen.addEventListener('click', () => {
+        <div class="masonry-grid reveal delay-2" id="masonry-grid">
+            
+            <div class="masonry-item apparel">
+                <img src="/static/1.jpg" alt="Artwork 1" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=1.jpg'">
+                <div class="masonry-overlay">
+                    <h4>Apparel & Brand</h4>
+                    <h3>Collection Title</h3>
+                    <p>Photoshop • Illustrator</p>
+                </div>
+            </div>
+
+            <div class="masonry-item uiux">
+                <img src="/static/2.png" alt="Artwork 2" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=2.png'">
+                <div class="masonry-overlay">
+                    <h4>UI / UX Web</h4>
+                    <h3>Interface Design</h3>
+                    <p>Figma</p>
+                </div>
+            </div>
+
+            <div class="masonry-item cinema">
+                <img src="/static/3.png" alt="Artwork 3" onerror="this.src='https://via.placeholder.com/800x1200/111/444?text=3.png'">
+                <div class="masonry-overlay">
+                    <h4>Cinematography</h4>
+                    <h3>Lighting Setup</h3>
+                    <p>Camera • Veo</p>
+                </div>
+            </div>
+
+            <div class="masonry-item apparel">
+                <img src="/static/4.png" alt="Artwork 4" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=4.png'">
+                <div class="masonry-overlay">
+                    <h4>Apparel & Brand</h4>
+                    <h3>Streetwear Concept</h3>
+                    <p>Graphic Design</p>
+                </div>
+            </div>
+            
+            <div class="masonry-item uiux">
+                <img src="/static/5.png" alt="Artwork 5" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=5.png'">
+                <div class="masonry-overlay">
+                    <h4>UI / UX Web</h4>
+                    <h3>Mobile Application</h3>
+                    <p>Prototyping</p>
+                </div>
+            </div>
+
+            <div class="masonry-item cinema">
+                <img src="/static/6.jpg" alt="Artwork 6" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=6.jpg'">
+                <div class="masonry-overlay">
+                    <h4>Cinematography</h4>
+                    <h3>Scene Render</h3>
+                    <p>Color Grading</p>
+                </div>
+            </div>
+
+            <div class="masonry-item apparel">
+                <img src="/static/7.jpg" alt="Artwork 7" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=7.jpg'">
+                <div class="masonry-overlay">
+                    <h4>Apparel & Brand</h4>
+                    <h3>Jersey Mockup</h3>
+                    <p>Photoshop</p>
+                </div>
+            </div>
+
+            <div class="masonry-item uiux">
+                <img src="/static/8.jpg" alt="Artwork 8" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=8.jpg'">
+                <div class="masonry-overlay">
+                    <h4>UI / UX Web</h4>
+                    <h3>Dashboard</h3>
+                    <p>Figma</p>
+                </div>
+            </div>
+
+            <div class="masonry-item apparel">
+                <img src="/static/9.png" alt="Artwork 9" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=9.png'">
+                <div class="masonry-overlay">
+                    <h4>Apparel & Brand</h4>
+                    <h3>Brand Identity</h3>
+                    <p>Vector Art</p>
+                </div>
+            </div>
+
+            <div class="masonry-item uiux">
+                <img src="/static/9.1.png" alt="Artwork 9.1" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=9.1.png'">
+                <div class="masonry-overlay">
+                    <h4>UI / UX Web</h4>
+                    <h3>Wireframe</h3>
+                    <p>Prototyping</p>
+                </div>
+            </div>
+
+            <div class="masonry-item cinema">
+                <img src="/static/9.2.png" alt="Artwork 9.2" onerror="this.src='https://via.placeholder.com/800x1200/111/444?text=9.2.png'">
+                <div class="masonry-overlay">
+                    <h4>Cinematography</h4>
+                    <h3>Subject Focus</h3>
+                    <p>Visual Style</p>
+                </div>
+            </div>
+
+            <div class="masonry-item apparel">
+                <img src="/static/10.png" alt="Artwork 10" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=10.png'">
+                <div class="masonry-overlay">
+                    <h4>Apparel & Brand</h4>
+                    <h3>Merch Design</h3>
+                    <p>Graphic Layout</p>
+                </div>
+            </div>
+
+            <div class="masonry-item uiux">
+                <img src="/static/10.1.jpg" alt="Artwork 10.1" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=10.1.jpg'">
+                <div class="masonry-overlay">
+                    <h4>UI / UX Web</h4>
+                    <h3>Web Portal</h3>
+                    <p>Figma</p>
+                </div>
+            </div>
+
+            <div class="masonry-item apparel">
+                <img src="/static/13.jpg" alt="Artwork 13" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=13.jpg'">
+                <div class="masonry-overlay">
+                    <h4>Apparel & Brand</h4>
+                    <h3>Print Layout</h3>
+                    <p>Illustrator</p>
+                </div>
+            </div>
+
+            <div class="masonry-item uiux">
+                <img src="/static/14.jpg" alt="Artwork 14" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=14.jpg'">
+                <div class="masonry-overlay">
+                    <h4>UI / UX Web</h4>
+                    <h3>App Concept</h3>
+                    <p>UI Design</p>
+                </div>
+            </div>
+
+            <div class="masonry-item cinema">
+                <img src="/static/15.png" alt="Artwork 15" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=15.png'">
+                <div class="masonry-overlay">
+                    <h4>Cinematography</h4>
+                    <h3>Environment</h3>
+                    <p>Lighting</p>
+                </div>
+            </div>
+
+            <div class="masonry-item apparel">
+                <img src="/static/16.png" alt="Artwork 16" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=16.png'">
+                <div class="masonry-overlay">
+                    <h4>Apparel & Brand</h4>
+                    <h3>Typographic Print</h3>
+                    <p>Typography</p>
+                </div>
+            </div>
+
+            <div class="masonry-item uiux">
+                <img src="/static/17.png" alt="Artwork 17" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=17.png'">
+                <div class="masonry-overlay">
+                    <h4>UI / UX Web</h4>
+                    <h3>Interactive Prototype</h3>
+                    <p>Figma</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Section: Certifications (Infinite Carousel) -->
+    <section class="cert-section reveal">
+        <div class="carousel-container">
+            <div class="carousel-track">
+                <!-- Original set -->
+                <img src="static/cert1.jpg" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert2.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert3.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert4.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert5.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert6.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+
+                <!-- Duplicated set for seamless infinite scroll -->
+                <img src="static/cert1.jpg" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert2.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert3.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert4.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert5.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert6.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Contact -->
+    <section class="contact-section" id="contact">
+        <h2 class="huge-text reveal">LET'S BUILD<br>TOGETHER.</h2>
+        <p class="contact-subtext reveal">(+63) 991-481-5770 &nbsp;|&nbsp; sistonajohnashley@gmail.com</p>
+        
+        <div class="reveal delay-1">
+            <button id="open-contact-btn" class="premium-btn cursor-hover">
+                <span>Initiate Contact</span> <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <div class="social-links reveal delay-2">
+            <a href="https://www.linkedin.com/in/john-sistona-3589872a8/?locale=en_US" target="_blank" class="cursor-hover"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://web.facebook.com/john.sistona.2024" target="_blank" class="cursor-hover"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/b.bu.qt/" target="_blank" class="cursor-hover"><i class="fab fa-instagram"></i></a>
+        </div>
+        
+        <div style="margin-top: 50px; font-size: 0.8rem; color: #444; font-family: 'JetBrains Mono', monospace;">
+            &copy; <span id="current-year">2026</span> John Ashley S. Sistona. Crafted with precision.
+        </div>
+    </section>
+
+    <!-- MODAL (From Original Code) -->
+    <div class="modal-overlay" id="contact-modal">
+        <div class="modal-box">
+            <button class="close-modal" id="close-contact-btn"><i class="fas fa-times"></i></button>
+            <h2>Start a dialogue</h2>
+            <form id="contact-form">
+                <div class="form-group"><input type="text" id="sender-name" placeholder="Your Name" required></div>
+                <div class="form-group"><textarea id="sender-msg" placeholder="Tell me about your project..." required></textarea></div>
+                <button type="submit" class="submit-btn cursor-hover">Send Transmission</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ECOSYSTEM CHAT UI (From Original Code) -->
+    <div id="chat-toggle-btn" class="chat-toggle-btn"><i class="fas fa-sparkles"></i></div>
+
+    <div id="chat-container" class="chat-container">
+        <div class="chat-header" id="chat-drag-handle">
+            <h3><i class="fas fa-microchip"></i> System.AI</h3>
+            <button id="chat-close-btn" class="chat-close-btn cursor-hover"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                Initializing interface... Welcome. I am John's AI construct. Ask me anything about his technical stack, leadership history, or recent projects.
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Query system...">
+            <button id="chat-send-btn" class="cursor-hover"><i class="fas fa-arrow-up"></i></button>
+        </div>
+    </div>
+
+    <!-- 
+      ========================================================
+      JAVASCRIPT ENGINE & INTERACTIONS
+      ========================================================
+    -->
+    <script>
+        // ----------------------------------------------------
+        // 1. INTRO SCREEN & PRELOADER LOGIC
+        // ----------------------------------------------------
+        const introScreen = document.getElementById('intro-screen');
+        
+        // Wait strictly for user click to proceed.
+        introScreen.addEventListener('click', dismissIntro);
+
+        function dismissIntro() {
+            if(!introScreen.classList.contains('intro-hidden')) {
+                // Apply the slide-up CSS transition class
                 introScreen.classList.add('intro-hidden');
                 document.body.classList.remove('locked');
+                
+                // Allow the 1.2s CSS transition to finish before hiding from DOM
                 setTimeout(() => introScreen.style.display = 'none', 1200);
+            }
+        }
+
+        // ----------------------------------------------------
+        // 2. CUSTOM CURSOR LOGIC
+        // ----------------------------------------------------
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        let cursorX = 0, cursorY = 0;
+        let outlineX = 0, outlineY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            cursorX = e.clientX;
+            cursorY = e.clientY;
+            
+            cursorDot.style.left = `${cursorX}px`;
+            cursorDot.style.top = `${cursorY}px`;
+        });
+
+        function animateCursor() {
+            let distX = cursorX - outlineX;
+            let distY = cursorY - outlineY;
+            
+            outlineX += distX * 0.15;
+            outlineY += distY * 0.15;
+            
+            cursorOutline.style.left = `${outlineX}px`;
+            cursorOutline.style.top = `${outlineY}px`;
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        const hoverElements = document.querySelectorAll('a, button, .skill-pill, .tilt-card, #intro-screen, .cursor-hover');
+        
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.style.width = '60px';
+                cursorOutline.style.height = '60px';
+                cursorOutline.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+                cursorOutline.style.backgroundColor = 'transparent';
+            });
+        });
+
+        // ----------------------------------------------------
+        // 3. INTERSECTION OBSERVER (Scroll Reveals)
+        // ----------------------------------------------------
+        const revealOptions = { 
+            root: null, 
+            rootMargin: '0px', 
+            threshold: 0.15 
+        };
+        
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, revealOptions);
+        
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // ----------------------------------------------------
+        // 4. FLOATING NAVBAR (Scroll Spy)
+        // ----------------------------------------------------
+        const navbar = document.getElementById('navbar');
+        let lastScrollTop = 0;
+
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                navbar.style.transform = 'translate(-50%, -150%)';
+            } else {
+                navbar.style.transform = 'translate(-50%, 0)';
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+            let current = "";
+            const sections = document.querySelectorAll("section, .section-container");
+            
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - sectionHeight / 3) {
+                    current = section.getAttribute("id");
+                }
             });
 
-            // 2. Intersection Observer for Scroll Reveals
-            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        observer.unobserve(entry.target); 
+            document.querySelectorAll(".nav-link").forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href").includes(current)) {
+                    link.classList.add("active");
+                }
+            });
+        });
+
+        // ----------------------------------------------------
+        // 5. TERMINAL TYPING EFFECT
+        // ----------------------------------------------------
+        const texts = [
+            "echo 'Computer Engineering Student'",
+            "sudo apt-get install hardware-logic",
+            "git commit -m 'DOST Scholar'",
+            "./compile_ui_ux_prototype.sh"
+        ];
+        
+        const typeWriterElement = document.getElementById("typewriter-text");
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typingDelay = 100;
+        
+        function type() {
+            const currentText = texts[textIndex];
+            
+            if (isDeleting) {
+                typeWriterElement.innerText = currentText.substring(0, charIndex - 1);
+                charIndex--;
+                typingDelay = 50;
+            } else {
+                typeWriterElement.innerText = currentText.substring(0, charIndex + 1);
+                charIndex++;
+                typingDelay = 100;
+            }
+            
+            if (!isDeleting && charIndex === currentText.length) {
+                typingDelay = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % texts.length;
+                typingDelay = 500;
+            }
+            
+            setTimeout(type, typingDelay);
+        }
+        
+        setTimeout(type, 2000);
+
+        // ----------------------------------------------------
+        // 6. VANILLA 3D TILT EFFECT
+        // ----------------------------------------------------
+        const tiltCards = document.querySelectorAll('.tilt-card');
+        const isMobileDevice = window.matchMedia("(max-width: 768px)").matches;
+        
+        if (!isMobileDevice) {
+            tiltCards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const maxTilt = 10;
+                    const rotateX = ((y - centerY) / centerY) * -maxTilt;
+                    const rotateY = ((x - centerX) / centerX) * maxTilt;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                    card.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+                });
+                
+                card.addEventListener('mouseenter', () => {
+                    card.style.transition = 'none';
+                });
+            });
+        }
+
+        // ----------------------------------------------------
+        // 7. MODAL LOGIC (Original Form Code)
+        // ----------------------------------------------------
+        const contactModal = document.getElementById('contact-modal');
+        document.getElementById('open-contact-btn').addEventListener('click', () => contactModal.classList.add('active'));
+        document.getElementById('close-contact-btn').addEventListener('click', () => contactModal.classList.remove('active'));
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('sender-name').value;
+            const msg = document.getElementById('sender-msg').value;
+            window.location.href = `mailto:sistonajohnashley@gmail.com?subject=Inquiry from ${encodeURIComponent(name)}&body=${encodeURIComponent(msg)}`;
+            contactModal.classList.remove('active');
+        });
+
+        // ----------------------------------------------------
+        // 8. MASONRY FILTER LOGIC
+        // ----------------------------------------------------
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const masonryItems = document.querySelectorAll('.masonry-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const filterValue = btn.getAttribute('data-filter');
+                
+                masonryItems.forEach(item => {
+                    if (filterValue === 'all' || item.classList.contains(filterValue)) {
+                        item.classList.remove('hide');
+                        setTimeout(() => { 
+                            item.style.opacity = '1'; 
+                            item.style.transform = 'scale(1)'; 
+                        }, 50);
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'scale(0.9)';
+                        setTimeout(() => item.classList.add('hide'), 400); 
                     }
                 });
-            }, observerOptions);
-            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-            // 3. Modal Logic
-            const contactModal = document.getElementById('contact-modal');
-            document.getElementById('open-contact-btn').addEventListener('click', () => contactModal.classList.add('active'));
-            document.getElementById('close-contact-btn').addEventListener('click', () => contactModal.classList.remove('active'));
-            document.getElementById('contact-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const name = document.getElementById('sender-name').value;
-                const msg = document.getElementById('sender-msg').value;
-                window.location.href = `mailto:sistonajohnashley@gmail.com?subject=Inquiry from ${encodeURIComponent(name)}&body=${encodeURIComponent(msg)}`;
-                contactModal.classList.remove('active');
             });
+        });
 
-            // 4. MASONRY FILTER LOGIC
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const masonryItems = document.querySelectorAll('.masonry-item');
+        // ----------------------------------------------------
+        // 9. AI CHATBOT API INTERACTION
+        // ----------------------------------------------------
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        const chatMessages = document.getElementById('chat-messages');
 
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    const filterValue = btn.getAttribute('data-filter');
-                    
-                    masonryItems.forEach(item => {
-                        if (filterValue === 'all' || item.classList.contains(filterValue)) {
-                            item.classList.remove('hide');
-                            setTimeout(() => { 
-                                item.style.opacity = '1'; 
-                                item.style.transform = 'scale(1)'; 
-                            }, 50);
-                        } else {
-                            item.style.opacity = '0';
-                            item.style.transform = 'scale(0.9)';
-                            setTimeout(() => item.classList.add('hide'), 400); 
-                        }
-                    });
+        function addMessage(text, isUser) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            msgDiv.innerText = text;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            addMessage(text, true);
+            chatInput.value = '';
+
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot-message';
+            loadingDiv.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const response = await fetch('/api/chat/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
                 });
-            });
-
-            // 5. AI Chatbot API Interaction
-            const chatInput = document.getElementById('chat-input');
-            const chatSendBtn = document.getElementById('chat-send-btn');
-            const chatMessages = document.getElementById('chat-messages');
-
-            function addMessage(text, isUser) {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-                msgDiv.innerText = text;
-                chatMessages.appendChild(msgDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                const data = await response.json();
+                chatMessages.removeChild(loadingDiv);
+                addMessage(data.reply, false);
+            } catch (error) {
+                chatMessages.removeChild(loadingDiv);
+                addMessage("Network error. AI core unreachable.", false);
             }
+        }
 
-            async function sendMessage() {
-                const text = chatInput.value.trim();
-                if (!text) return;
-                addMessage(text, true);
-                chatInput.value = '';
+        chatSendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-                const loadingDiv = document.createElement('div');
-                loadingDiv.className = 'message bot-message';
-                loadingDiv.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
-                chatMessages.appendChild(loadingDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+        // ----------------------------------------------------
+        // 10. DRAG & DROP UI LOGIC (Toggle Button + Chat Container)
+        // ----------------------------------------------------
+        const toggleBtn = document.getElementById('chat-toggle-btn');
+        const chatContainer = document.getElementById('chat-container');
+        const chatCloseBtn = document.getElementById('chat-close-btn');
+        const chatDragHandle = document.getElementById('chat-drag-handle');
 
-                try {
-                    const response = await fetch('/api/chat/', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: text })
-                    });
-                    const data = await response.json();
-                    chatMessages.removeChild(loadingDiv);
-                    addMessage(data.reply, false);
-                } catch (error) {
-                    chatMessages.removeChild(loadingDiv);
-                    addMessage("Network error. AI core unreachable.", false);
-                }
-            }
+        let isDraggingToggle = false;
+        let toggleDragDistance = 0;
+        let tOffsetX, tOffsetY;
 
-            chatSendBtn.addEventListener('click', sendMessage);
-            chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        toggleBtn.addEventListener('mousedown', (e) => {
+            isDraggingToggle = true;
+            toggleDragDistance = 0;
+            const rect = toggleBtn.getBoundingClientRect();
+            tOffsetX = e.clientX - rect.left;
+            tOffsetY = e.clientY - rect.top;
+            toggleBtn.style.transition = 'none'; 
+        });
 
-
-            // 6. DRAG & DROP UI LOGIC (Toggle Button + Chat Container)
-            const toggleBtn = document.getElementById('chat-toggle-btn');
-            const chatContainer = document.getElementById('chat-container');
-            const chatCloseBtn = document.getElementById('chat-close-btn');
-            const chatDragHandle = document.getElementById('chat-drag-handle');
-
-            // --- TOGGLE BUTTON DRAG LOGIC ---
-            let isDraggingToggle = false;
-            let toggleDragDistance = 0;
-            let tOffsetX, tOffsetY;
-
-            toggleBtn.addEventListener('mousedown', (e) => {
-                isDraggingToggle = true;
-                toggleDragDistance = 0;
-                const rect = toggleBtn.getBoundingClientRect();
-                tOffsetX = e.clientX - rect.left;
-                tOffsetY = e.clientY - rect.top;
-                toggleBtn.style.transition = 'none'; // Disable hover scale while moving
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (isDraggingToggle) {
-                    toggleDragDistance += Math.abs(e.movementX) + Math.abs(e.movementY);
-
-                    let newX = e.clientX - tOffsetX;
-                    let newY = e.clientY - tOffsetY;
-
-                    // Lock icon inside the screen
-                    const maxLeft = window.innerWidth - toggleBtn.offsetWidth;
-                    const maxTop = window.innerHeight - toggleBtn.offsetHeight;
-                    newX = Math.max(0, Math.min(newX, maxLeft));
-                    newY = Math.max(0, Math.min(newY, maxTop));
-
-                    toggleBtn.style.left = `${newX}px`;
-                    toggleBtn.style.top = `${newY}px`;
-                    toggleBtn.style.bottom = 'auto';
-                    toggleBtn.style.right = 'auto';
-                }
-            });
-
-            document.addEventListener('mouseup', () => {
-                if (isDraggingToggle) {
-                    isDraggingToggle = false;
-                    toggleBtn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease';
-                }
-            });
-
-            // --- OPEN CHATBOX (Dynamic Spawning) ---
-            toggleBtn.addEventListener('click', () => {
-                if (toggleDragDistance > 5) return; // Ignore click if it was actually a drag
-
-                const tRect = toggleBtn.getBoundingClientRect();
-                const chatWidth = chatContainer.offsetWidth || 380; // Fallback if hidden
-                const chatHeight = chatContainer.offsetHeight || 500;
-
-                let chatX, chatY;
-
-                // X-Axis Spawning: If toggle is on the right half, push chat to the left.
-                if (tRect.left > window.innerWidth / 2) {
-                    chatX = tRect.right - chatWidth;
-                } else {
-                    chatX = tRect.left;
-                }
-
-                // Y-Axis Spawning: If toggle is on bottom half, push chat upwards.
-                if (tRect.top > window.innerHeight / 2) {
-                    chatY = tRect.bottom - chatHeight;
-                } else {
-                    chatY = tRect.top;
-                }
-
-                // Final Clamp: Absolutely ensure the chatbox cannot clip off the screen
-                chatX = Math.max(20, Math.min(chatX, window.innerWidth - chatWidth - 20));
-                chatY = Math.max(20, Math.min(chatY, window.innerHeight - chatHeight - 20));
-
-                chatContainer.style.left = `${chatX}px`;
-                chatContainer.style.top = `${chatY}px`;
-                chatContainer.style.bottom = 'auto';
-                chatContainer.style.right = 'auto';
-
-                chatContainer.classList.add('active');
-                toggleBtn.style.transform = 'scale(0)';
-            });
-
-            // --- CLOSE CHATBOX (Dynamic Minimizing) ---
-            chatCloseBtn.addEventListener('click', () => {
-                const cRect = chatContainer.getBoundingClientRect();
-
-                // Spawn the circle exactly where the top-right corner of the chatbox is
-                let toggleX = cRect.right - toggleBtn.offsetWidth; 
-                let toggleY = cRect.top;
-
-                // Clamp to screen edges just in case
-                toggleX = Math.max(20, Math.min(toggleX, window.innerWidth - toggleBtn.offsetWidth - 20));
-                toggleY = Math.max(20, Math.min(toggleY, window.innerHeight - toggleBtn.offsetHeight - 20));
-
-                toggleBtn.style.left = `${toggleX}px`;
-                toggleBtn.style.top = `${toggleY}px`;
+        document.addEventListener('mousemove', (e) => {
+            if (isDraggingToggle) {
+                toggleDragDistance += Math.abs(e.movementX) + Math.abs(e.movementY);
+                let newX = e.clientX - tOffsetX;
+                let newY = e.clientY - tOffsetY;
+                const maxLeft = window.innerWidth - toggleBtn.offsetWidth;
+                const maxTop = window.innerHeight - toggleBtn.offsetHeight;
+                newX = Math.max(0, Math.min(newX, maxLeft));
+                newY = Math.max(0, Math.min(newY, maxTop));
+                toggleBtn.style.left = `${newX}px`;
+                toggleBtn.style.top = `${newY}px`;
                 toggleBtn.style.bottom = 'auto';
                 toggleBtn.style.right = 'auto';
+            }
+        });
 
-                chatContainer.classList.remove('active');
-                toggleBtn.style.transform = 'scale(1)';
-            });
+        document.addEventListener('mouseup', () => {
+            if (isDraggingToggle) {
+                isDraggingToggle = false;
+                toggleBtn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease';
+            }
+        });
 
-            // --- CHAT CONTAINER DRAG LOGIC ---
-            let isDraggingChat = false;
-            let cOffsetX, cOffsetY;
+        toggleBtn.addEventListener('click', () => {
+            if (toggleDragDistance > 5) return; 
+            const tRect = toggleBtn.getBoundingClientRect();
+            const chatWidth = chatContainer.offsetWidth || 380; 
+            const chatHeight = chatContainer.offsetHeight || 500;
+            let chatX, chatY;
+            if (tRect.left > window.innerWidth / 2) {
+                chatX = tRect.right - chatWidth;
+            } else {
+                chatX = tRect.left;
+            }
+            if (tRect.top > window.innerHeight / 2) {
+                chatY = tRect.bottom - chatHeight;
+            } else {
+                chatY = tRect.top;
+            }
+            chatX = Math.max(20, Math.min(chatX, window.innerWidth - chatWidth - 20));
+            chatY = Math.max(20, Math.min(chatY, window.innerHeight - chatHeight - 20));
+            chatContainer.style.left = `${chatX}px`;
+            chatContainer.style.top = `${chatY}px`;
+            chatContainer.style.bottom = 'auto';
+            chatContainer.style.right = 'auto';
+            chatContainer.classList.add('active');
+            toggleBtn.style.transform = 'scale(0)';
+        });
 
-            chatDragHandle.addEventListener('mousedown', (e) => {
-                if(e.target.closest('#chat-close-btn')) return;
-                isDraggingChat = true;
-                const rect = chatContainer.getBoundingClientRect();
-                cOffsetX = e.clientX - rect.left;
-                cOffsetY = e.clientY - rect.top;
-                chatContainer.style.transition = 'none'; // Disable smooth animations while dragging
-            });
+        chatCloseBtn.addEventListener('click', () => {
+            const cRect = chatContainer.getBoundingClientRect();
+            let toggleX = cRect.right - toggleBtn.offsetWidth; 
+            let toggleY = cRect.top;
+            toggleX = Math.max(20, Math.min(toggleX, window.innerWidth - toggleBtn.offsetWidth - 20));
+            toggleY = Math.max(20, Math.min(toggleY, window.innerHeight - toggleBtn.offsetHeight - 20));
+            toggleBtn.style.left = `${toggleX}px`;
+            toggleBtn.style.top = `${toggleY}px`;
+            toggleBtn.style.bottom = 'auto';
+            toggleBtn.style.right = 'auto';
+            chatContainer.classList.remove('active');
+            toggleBtn.style.transform = 'scale(1)';
+        });
 
-            document.addEventListener('mousemove', (e) => {
-                if (isDraggingChat) {
-                    let newX = e.clientX - cOffsetX;
-                    let newY = e.clientY - cOffsetY;
+        let isDraggingChat = false;
+        let cOffsetX, cOffsetY;
 
-                    const maxLeft = window.innerWidth - chatContainer.offsetWidth;
-                    const maxTop = window.innerHeight - chatContainer.offsetHeight;
-                    newX = Math.max(0, Math.min(newX, maxLeft));
-                    newY = Math.max(0, Math.min(newY, maxTop));
+        chatDragHandle.addEventListener('mousedown', (e) => {
+            if(e.target.closest('#chat-close-btn')) return;
+            isDraggingChat = true;
+            const rect = chatContainer.getBoundingClientRect();
+            cOffsetX = e.clientX - rect.left;
+            cOffsetY = e.clientY - rect.top;
+            chatContainer.style.transition = 'none'; 
+        });
 
-                    chatContainer.style.left = `${newX}px`;
-                    chatContainer.style.top = `${newY}px`;
-                }
-            });
+        document.addEventListener('mousemove', (e) => {
+            if (isDraggingChat) {
+                let newX = e.clientX - cOffsetX;
+                let newY = e.clientY - cOffsetY;
+                const maxLeft = window.innerWidth - chatContainer.offsetWidth;
+                const maxTop = window.innerHeight - chatContainer.offsetHeight;
+                newX = Math.max(0, Math.min(newX, maxLeft));
+                newY = Math.max(0, Math.min(newY, maxTop));
+                chatContainer.style.left = `${newX}px`;
+                chatContainer.style.top = `${newY}px`;
+            }
+        });
 
-            document.addEventListener('mouseup', () => {
-                if (isDraggingChat) {
-                    isDraggingChat = false;
-                    chatContainer.style.transition = 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s';
-                }
-            });
+        document.addEventListener('mouseup', () => {
+            if (isDraggingChat) {
+                isDraggingChat = false;
+                chatContainer.style.transition = 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s';
+            }
+        });
 
-        </script>
-    </body>
-    </html>
-    """
-    return HttpResponse(html_content)
+        // Set Current Year dynamically
+        document.getElementById('current-year').innerText = new Date().getFullYear();
 
-
-urlpatterns = [
-                  path("", homepage),
-                  path("api/chat/", chat_api),
-              ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
-
-if __name__ == "__main__":
-    execute_from_command_line([sys.argv[0], "runserver", "8000"])
+    </script>
+</body>
+</html>
