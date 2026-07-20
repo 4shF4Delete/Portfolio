@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <!-- Fluid zooming enabled for accessibility and better UX -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>John Ashley S. Sistona | Creative Engineer</title>
+    <title>John Ashley S. Sistona | Computer Engineer</title>
 
     <!-- 
       ========================================================
@@ -22,10 +22,10 @@
       ========================================================
     -->
     <style>
-        /* --- 1. CSS VARIABLES & THEME (GREEN UPDATE) --- */
+        /* --- 1. CSS VARIABLES & THEME (GREEN & BLACK) --- */
         :root { 
-            /* Core Colors */
-            --bg-color: #050505; 
+            /* Core Colors - True Black */
+            --bg-color: #030303; 
             --bg-surface: #0a0a0a;
             
             /* Text Colors */
@@ -33,17 +33,17 @@
             --text-muted: #86868b;
             --text-dark: #111111;
             
-            /* Accents - Emerald Green Theme */
+            /* Accents - Pure Greens */
             --accent-primary: #10b981;   /* Emerald Green */
-            --accent-secondary: #06b6d4; /* Teal / Cyan Accent */
-            --accent-tertiary: #3b82f6;  /* Deep Blue */
-            --accent-glow: rgba(16, 185, 129, 0.5);
+            --accent-secondary: #22c55e; /* Vibrant Neon Green */
+            --accent-tertiary: #047857;  /* Deep Forest Green */
+            --accent-glow: rgba(16, 185, 129, 0.4);
             
             /* Glassmorphism Variables */
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-bg-hover: rgba(255, 255, 255, 0.06);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-border-highlight: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-bg-hover: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-border-highlight: rgba(16, 185, 129, 0.3); /* Green tinted border highlight */
             --glass-blur: blur(20px);
             
             /* Spacing */
@@ -82,7 +82,7 @@
             background-color: var(--bg-color); 
             color: var(--text-main); 
             overflow-x: hidden; 
-            overflow-wrap: break-word; /* Prevents text from spilling out of its container */
+            overflow-wrap: break-word; 
             line-height: 1.6; 
             letter-spacing: -0.01em;
             -webkit-font-smoothing: antialiased; 
@@ -101,17 +101,17 @@
             background: var(--bg-color); 
         }
         ::-webkit-scrollbar-thumb { 
-            background: #222; 
+            background: #1a1a1a; 
             border-radius: 10px; 
-            border: 2px solid var(--bg-color);
+            border: 1px solid var(--bg-color);
         }
         ::-webkit-scrollbar-thumb:hover { 
             background: var(--accent-primary); 
         }
 
         ::selection {
-            background: var(--accent-secondary);
-            color: var(--text-main);
+            background: var(--accent-primary);
+            color: var(--bg-color);
         }
 
         /* --- 3. CUSTOM CURSOR --- */
@@ -160,14 +160,14 @@
             position: absolute; 
             border-radius: 50%; 
             filter: blur(140px); 
-            opacity: 0.4; 
+            opacity: 0.35; 
             animation: float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); 
             will-change: transform;
         }
         
         .glow-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: var(--accent-primary); }
-        .glow-2 { bottom: -20%; right: -10%; width: 70vw; height: 70vw; background: var(--accent-secondary); animation-delay: -5s; }
-        .glow-3 { top: 40%; left: 30%; width: 40vw; height: 40vw; background: var(--accent-tertiary); opacity: 0.2; animation-delay: -10s; }
+        .glow-2 { bottom: -20%; right: -10%; width: 70vw; height: 70vw; background: var(--accent-secondary); animation-delay: -5s; opacity: 0.25; }
+        .glow-3 { top: 40%; left: 30%; width: 40vw; height: 40vw; background: var(--accent-tertiary); opacity: 0.4; animation-delay: -10s; }
 
         @keyframes float { 
             0% { transform: translate(0, 0) scale(1); } 
@@ -182,7 +182,7 @@
             width: 100vw;
             height: 100vh;
             z-index: -1;
-            opacity: 0.03;
+            opacity: 0.04;
             pointer-events: none;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
@@ -194,7 +194,7 @@
             left: 0; 
             width: 100vw; 
             height: 100vh; 
-            height: 100dvh; /* Dynamic viewport fixes mobile top/bottom gaps permanently */
+            height: 100dvh; 
             background: var(--bg-color); 
             z-index: 10000; 
             display: flex; 
@@ -235,7 +235,6 @@
             color: var(--text-main);
         }
         
-        /* Subtle slide up animation */
         .intro-hidden { 
             transform: translateY(-100%); 
             pointer-events: none; 
@@ -371,7 +370,7 @@
             gap: 10px;
             background: rgba(16, 185, 129, 0.1);
             border: 1px solid rgba(16, 185, 129, 0.3);
-            color: var(--accent-tertiary);
+            color: var(--accent-primary);
             padding: 8px 16px;
             border-radius: var(--radius-pill);
             font-family: 'JetBrains Mono', monospace;
@@ -414,12 +413,12 @@
             padding: 15px 20px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-            color: var(--accent-primary);
+            color: var(--text-main);
             max-width: 450px;
             display: inline-block;
         }
         
-        .terminal-prefix { color: var(--accent-tertiary); }
+        .terminal-prefix { color: var(--accent-primary); }
         .typewriter { border-right: 2px solid var(--accent-primary); padding-right: 5px; animation: blink 1s step-end infinite; }
         @keyframes blink { 50% { border-color: transparent; } }
 
@@ -441,7 +440,7 @@
             border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; 
             border: 1px solid var(--glass-border-highlight); 
             animation: morph 15s linear infinite; 
-            box-shadow: inset 0 0 40px rgba(16, 185, 129, 0.1);
+            box-shadow: inset 0 0 40px rgba(16, 185, 129, 0.15);
         }
         
         .profile-pic { 
@@ -511,7 +510,7 @@
         
         .card-content { transform: translateZ(30px); pointer-events: none; }
 
-        .glass-card:hover { border-color: var(--glass-border-highlight); box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.02); }
+        .glass-card:hover { border-color: var(--glass-border-highlight); box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(16, 185, 129, 0.05); }
 
         .span-2 { grid-column: span 2; }
         .span-full { grid-column: 1 / -1; }
@@ -540,8 +539,8 @@
         .skill-pill:hover { border-color: var(--glass-border-highlight); }
         .skill-content { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s; font-weight: 500; font-size: 1.05rem; }
         .skill-content i { color: var(--text-muted); font-size: 1.2rem; }
-        .skill-rating { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--text-main); color: var(--bg-color); display: flex; align-items: center; justify-content: center; gap: 6px; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: var(--radius-pill); font-size: 0.9rem; }
-        .skill-rating .star { color: var(--bg-color); opacity: 0.3; }
+        .skill-rating { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--accent-primary); color: var(--bg-color); display: flex; align-items: center; justify-content: center; gap: 6px; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: var(--radius-pill); font-size: 0.9rem; font-weight: 700; }
+        .skill-rating .star { color: var(--bg-color); opacity: 0.4; }
         .skill-rating .star.filled { opacity: 1; }
         .skill-pill:hover .skill-content { transform: translateY(-100%); opacity: 0; }
         .skill-pill:hover .skill-rating { transform: translateY(0); }
@@ -550,7 +549,7 @@
         .filter-controls { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 40px; position: relative; z-index: 10; }
         .filter-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-muted); padding: 10px 24px; border-radius: 50px; font-family: 'Inter', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; }
         .filter-btn:hover { color: var(--text-main); border-color: rgba(255,255,255,0.2); }
-        .filter-btn.active { background: var(--accent-primary); color: var(--bg-color); border-color: var(--accent-primary); font-weight: 600; }
+        .filter-btn.active { background: var(--accent-primary); color: var(--bg-color); border-color: var(--accent-primary); font-weight: 700; }
 
         .archive-wrapper {
             position: relative;
@@ -576,7 +575,7 @@
         .masonry-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 20px; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 70%, transparent 100%); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; justify-content: flex-end; }
         .masonry-item:hover .masonry-overlay { transform: translateY(0); }
 
-        .masonry-overlay h4 { color: var(--accent-primary); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; font-weight: 600; }
+        .masonry-overlay h4 { color: var(--accent-primary); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; font-weight: 700; }
         .masonry-overlay h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; color: var(--text-main); margin-bottom: 2px; }
         .masonry-overlay p { color: #aaa; font-size: 0.85rem; font-weight: 300; }
 
@@ -610,7 +609,7 @@
         @media (max-width: 1024px) { .masonry-grid { column-count: 2; } }
         @media (max-width: 600px) { .masonry-grid { column-count: 1; } }
 
-        /* --- 13. CERTIFICATION CAROUSEL (JS DRIVEN UPGRADE) --- */
+        /* --- 13. CERTIFICATION CAROUSEL (JS DRIVEN) --- */
         .cert-section { 
             overflow: hidden; padding: 8vh 0; border-top: 1px solid var(--glass-border); 
             border-bottom: 1px solid var(--glass-border); margin: 5vh 0; 
@@ -620,7 +619,6 @@
         .cert-section::before { left: 0; background: linear-gradient(to right, var(--bg-color), transparent); }
         .cert-section::after { right: 0; background: linear-gradient(to left, var(--bg-color), transparent); }
         
-        /* Removed CSS animation to let JS handle interaction */
         .carousel-track { display: flex; width: max-content; align-items: center; will-change: transform; }
         
         .cert-img { height: 260px; width: auto; margin-right: 40px; border-radius: var(--radius-md); filter: grayscale(100%) opacity(0.4); transition: filter 0.5s ease, transform 0.5s ease, border-color 0.5s ease; border: 1px solid var(--glass-border); cursor: pointer; pointer-events: auto; }
@@ -635,72 +633,26 @@
         .premium-btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--accent-primary); transform: scaleX(0); transform-origin: right; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1; }
         .premium-btn:hover::before { transform: scaleX(1); transform-origin: left; }
         .premium-btn span, .premium-btn i { position: relative; z-index: 2; transition: color 0.4s; }
-        .premium-btn:hover span, .premium-btn:hover i { color: white; }
+        .premium-btn:hover span, .premium-btn:hover i { color: var(--bg-color); }
 
         .social-links { display: flex; justify-content: center; gap: 30px; margin-top: 80px; }
         .social-links a { color: var(--text-muted); font-size: 1.5rem; transition: all 0.3s; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--glass-border); background: var(--glass-bg); backdrop-filter: blur(10px); text-decoration: none; }
-        .social-links a:hover { color: var(--text-main); border-color: var(--text-main); transform: translateY(-5px); background: rgba(255,255,255,0.05); }
+        .social-links a:hover { color: var(--text-main); border-color: var(--accent-primary); transform: translateY(-5px); background: rgba(16, 185, 129, 0.05); }
 
-        /* --- 15. ECOSYSTEM CHAT UI (Dynamic Spatial Awareness) --- */
-        .chat-toggle-btn { 
-            position: fixed; bottom: 40px; right: 40px; 
-            background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); 
-            border: 1px solid var(--glass-border); color: var(--text-main); 
-            border-radius: 50%; width: 70px; height: 70px; font-size: 24px; 
-            cursor: grab; z-index: 1000; 
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            display: flex; align-items: center; justify-content: center;
-            user-select: none;
-        }
-        .chat-toggle-btn:active { cursor: grabbing; box-shadow: 0 5px 15px rgba(0,0,0,0.8); }
-
-        .chat-container { 
-            position: fixed; width: 380px; 
-            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); 
-            border-radius: 24px; border: 1px solid var(--glass-border); 
-            display: flex; flex-direction: column; overflow: hidden; z-index: 1000; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8); 
-            visibility: hidden; opacity: 0; pointer-events: none;
-            transform: translateY(20px) scale(0.95); 
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s; 
-        }
-        .chat-container.active { 
-            visibility: visible; opacity: 1; pointer-events: auto; 
-            transform: translateY(0) scale(1); 
-        }
-
-        .chat-header { padding: 25px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; cursor: grab; }
-        .chat-header:active { cursor: grabbing; }
-        .chat-header h3 { font-family: 'Syne', sans-serif; margin: 0; font-size: 1.2em; display: flex; align-items: center; gap: 10px; pointer-events: none; }
-        .chat-close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; transition: color 0.3s; z-index: 10; }
-        .chat-close-btn:hover { color: var(--text-main); }
-
-        .chat-messages { padding: 25px; height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-        .message { max-width: 85%; padding: 15px 20px; border-radius: 20px; font-size: 0.95rem; font-weight: 300; line-height: 1.5; word-wrap: break-word;}
-        .bot-message { background: rgba(255,255,255,0.05); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--glass-border); }
-        .user-message { background: var(--text-main); color: var(--bg-color); align-self: flex-end; border-bottom-right-radius: 4px; }
-
-        .chat-input-area { display: flex; padding: 20px; border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); }
-        .chat-input-area input { flex: 1; padding: 15px 20px; border-radius: 30px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); color: white; outline: none; transition: border-color 0.3s; font-family: 'Inter', sans-serif; }
-        .chat-input-area input:focus { border-color: rgba(255,255,255,0.3); }
-        .chat-input-area button { background: var(--text-main); color: var(--bg-color); border: none; width: 50px; height: 50px; border-radius: 50%; margin-left: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.3s; }
-        .chat-input-area button:hover { transform: scale(1.05); }
-
-        /* --- 16. MODALS (Contact & Lightbox) --- */
+        /* --- 15. MODALS (Contact & Lightbox) --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-box { background: rgba(15, 15, 15, 0.9); border: 1px solid var(--glass-border); width: 90%; max-width: 550px; border-radius: 24px; padding: 50px; transform: translateY(40px) scale(0.95); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
+        .modal-box { background: rgba(10, 10, 10, 0.95); border: 1px solid var(--glass-border); width: 90%; max-width: 550px; border-radius: 24px; padding: 50px; transform: translateY(40px) scale(0.95); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
         .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
         .modal-box h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 30px; }
         .form-group input, .form-group textarea { width: 100%; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.02); color: white; outline: none; margin-bottom: 20px; font-family: 'Inter', sans-serif; transition: border-color 0.3s; }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--text-main); }
-        .submit-btn { width: 100%; background: var(--text-main); color: var(--bg-color); border: none; padding: 18px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: transform 0.3s; }
-        .submit-btn:hover { transform: translateY(-2px); }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--accent-primary); }
+        .submit-btn { width: 100%; background: var(--accent-primary); color: var(--bg-color); border: none; padding: 18px; border-radius: 50px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: transform 0.3s; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2); }
         .close-modal { position: absolute; top: 25px; right: 25px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
-        .close-modal:hover { color: var(--text-main); }
+        .close-modal:hover { color: var(--accent-primary); }
 
-        /* --- 17. RESPONSIVE DESIGN (Media Queries) --- */
+        /* --- 16. RESPONSIVE DESIGN (Media Queries) --- */
         @media (max-width: 1100px) {
             .bento-grid { grid-template-columns: repeat(2, 1fr); }
             .span-2 { grid-column: span 2; }
@@ -781,7 +733,7 @@
         <div class="hero-content">
             <div class="hero-text">
                 <div class="dost-badge reveal">
-                    <i class="fas fa-microscope"></i> DOST Scholar
+                    <i class="fas fa-microscope"></i> ODSP Scholar
                 </div>
                 <h1 class="reveal delay-1">John Ashley<br><span>Sistona</span></h1>
                 
@@ -1323,25 +1275,6 @@
         </div>
     </div>
 
-    <!-- ECOSYSTEM CHAT UI -->
-    <div id="chat-toggle-btn" class="chat-toggle-btn cursor-hover"><i class="fas fa-sparkles"></i></div>
-
-    <div id="chat-container" class="chat-container">
-        <div class="chat-header" id="chat-drag-handle">
-            <h3><i class="fas fa-microchip"></i> System.AI</h3>
-            <button id="chat-close-btn" class="chat-close-btn cursor-hover"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-            <div class="message bot-message">
-                Initializing interface... Welcome. I am John's AI construct. Ask me anything about his technical stack, leadership history, or recent projects.
-            </div>
-        </div>
-        <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Query system...">
-            <button id="chat-send-btn" class="cursor-hover"><i class="fas fa-arrow-up"></i></button>
-        </div>
-    </div>
-
     <!-- 
       ========================================================
       JAVASCRIPT ENGINE & INTERACTIONS
@@ -1364,7 +1297,7 @@
         }
 
         // ----------------------------------------------------
-        // 2. CUSTOM CURSOR LOGIC (Updated to Green)
+        // 2. CUSTOM CURSOR LOGIC
         // ----------------------------------------------------
         const cursorDot = document.getElementById('cursor-dot');
         const cursorOutline = document.getElementById('cursor-outline');
@@ -1399,7 +1332,7 @@
             el.addEventListener('mouseenter', () => {
                 cursorOutline.style.width = '60px';
                 cursorOutline.style.height = '60px';
-                cursorOutline.style.backgroundColor = 'rgba(16, 185, 129, 0.1)'; // Emerald Green Glow
+                cursorOutline.style.backgroundColor = 'rgba(16, 185, 129, 0.1)'; 
             });
             el.addEventListener('mouseleave', () => {
                 cursorOutline.style.width = '40px';
@@ -1622,7 +1555,6 @@
         function animateCertificates() {
             if (!certIsDragging) {
                 certPos += certSpeed;
-                // Since the images are duplicated exactly once, half of the scrollWidth is the wrap point.
                 const halfWidth = certTrack.scrollWidth / 2;
                 
                 if (certPos >= halfWidth) certPos -= halfWidth; 
@@ -1633,7 +1565,6 @@
             requestAnimationFrame(animateCertificates);
         }
         
-        // Start Carousel Loop (requires images to load to get scrollWidth, so adding a slight delay)
         setTimeout(animateCertificates, 500);
 
         // Hover Direction/Speed Logic
@@ -1679,168 +1610,6 @@
         certSection.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX));
         certSection.addEventListener('touchmove', (e) => performDrag(e.touches[0].clientX));
         certSection.addEventListener('touchend', endDrag);
-
-
-        // ----------------------------------------------------
-        // 10. AI CHATBOT API INTERACTION
-        // ----------------------------------------------------
-        const chatInput = document.getElementById('chat-input');
-        const chatSendBtn = document.getElementById('chat-send-btn');
-        const chatMessages = document.getElementById('chat-messages');
-
-        function addMessage(text, isUser) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            msgDiv.innerText = text;
-            chatMessages.appendChild(msgDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        async function sendMessage() {
-            const text = chatInput.value.trim();
-            if (!text) return;
-            addMessage(text, true);
-            chatInput.value = '';
-
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'message bot-message';
-            loadingDiv.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
-            chatMessages.appendChild(loadingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            try {
-                const response = await fetch('/api/chat/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
-                });
-                const data = await response.json();
-                chatMessages.removeChild(loadingDiv);
-                addMessage(data.reply, false);
-            } catch (error) {
-                chatMessages.removeChild(loadingDiv);
-                addMessage("Network error. AI core unreachable.", false);
-            }
-        }
-
-        chatSendBtn.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-
-        // ----------------------------------------------------
-        // 11. DRAG & DROP UI LOGIC (Toggle Button + Chat Container)
-        // ----------------------------------------------------
-        const toggleBtn = document.getElementById('chat-toggle-btn');
-        const chatContainer = document.getElementById('chat-container');
-        const chatCloseBtn = document.getElementById('chat-close-btn');
-        const chatDragHandle = document.getElementById('chat-drag-handle');
-
-        let isDraggingToggle = false;
-        let toggleDragDistance = 0;
-        let tOffsetX, tOffsetY;
-
-        toggleBtn.addEventListener('mousedown', (e) => {
-            isDraggingToggle = true;
-            toggleDragDistance = 0;
-            const rect = toggleBtn.getBoundingClientRect();
-            tOffsetX = e.clientX - rect.left;
-            tOffsetY = e.clientY - rect.top;
-            toggleBtn.style.transition = 'none'; 
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (isDraggingToggle) {
-                toggleDragDistance += Math.abs(e.movementX) + Math.abs(e.movementY);
-                let newX = e.clientX - tOffsetX;
-                let newY = e.clientY - tOffsetY;
-                const maxLeft = window.innerWidth - toggleBtn.offsetWidth;
-                const maxTop = window.innerHeight - toggleBtn.offsetHeight;
-                newX = Math.max(0, Math.min(newX, maxLeft));
-                newY = Math.max(0, Math.min(newY, maxTop));
-                toggleBtn.style.left = `${newX}px`;
-                toggleBtn.style.top = `${newY}px`;
-                toggleBtn.style.bottom = 'auto';
-                toggleBtn.style.right = 'auto';
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (isDraggingToggle) {
-                isDraggingToggle = false;
-                toggleBtn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease';
-            }
-        });
-
-        toggleBtn.addEventListener('click', () => {
-            if (toggleDragDistance > 5) return; 
-            const tRect = toggleBtn.getBoundingClientRect();
-            const chatWidth = chatContainer.offsetWidth || 380; 
-            const chatHeight = chatContainer.offsetHeight || 500;
-            let chatX, chatY;
-            if (tRect.left > window.innerWidth / 2) {
-                chatX = tRect.right - chatWidth;
-            } else {
-                chatX = tRect.left;
-            }
-            if (tRect.top > window.innerHeight / 2) {
-                chatY = tRect.bottom - chatHeight;
-            } else {
-                chatY = tRect.top;
-            }
-            chatX = Math.max(20, Math.min(chatX, window.innerWidth - chatWidth - 20));
-            chatY = Math.max(20, Math.min(chatY, window.innerHeight - chatHeight - 20));
-            chatContainer.style.left = `${chatX}px`;
-            chatContainer.style.top = `${chatY}px`;
-            chatContainer.style.bottom = 'auto';
-            chatContainer.style.right = 'auto';
-            chatContainer.classList.add('active');
-            toggleBtn.style.transform = 'scale(0)';
-        });
-
-        chatCloseBtn.addEventListener('click', () => {
-            const cRect = chatContainer.getBoundingClientRect();
-            let toggleX = cRect.right - toggleBtn.offsetWidth; 
-            let toggleY = cRect.top;
-            toggleX = Math.max(20, Math.min(toggleX, window.innerWidth - toggleBtn.offsetWidth - 20));
-            toggleY = Math.max(20, Math.min(toggleY, window.innerHeight - toggleBtn.offsetHeight - 20));
-            toggleBtn.style.left = `${toggleX}px`;
-            toggleBtn.style.top = `${toggleY}px`;
-            toggleBtn.style.bottom = 'auto';
-            toggleBtn.style.right = 'auto';
-            chatContainer.classList.remove('active');
-            toggleBtn.style.transform = 'scale(1)';
-        });
-
-        let isDraggingChat = false;
-        let cOffsetX, cOffsetY;
-
-        chatDragHandle.addEventListener('mousedown', (e) => {
-            if(e.target.closest('#chat-close-btn')) return;
-            isDraggingChat = true;
-            const rect = chatContainer.getBoundingClientRect();
-            cOffsetX = e.clientX - rect.left;
-            cOffsetY = e.clientY - rect.top;
-            chatContainer.style.transition = 'none'; 
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (isDraggingChat) {
-                let newX = e.clientX - cOffsetX;
-                let newY = e.clientY - cOffsetY;
-                const maxLeft = window.innerWidth - chatContainer.offsetWidth;
-                const maxTop = window.innerHeight - chatContainer.offsetHeight;
-                newX = Math.max(0, Math.min(newX, maxLeft));
-                newY = Math.max(0, Math.min(newY, maxTop));
-                chatContainer.style.left = `${newX}px`;
-                chatContainer.style.top = `${newY}px`;
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (isDraggingChat) {
-                isDraggingChat = false;
-                chatContainer.style.transition = 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s';
-            }
-        });
 
         // Set Current Year dynamically
         document.getElementById('current-year').innerText = new Date().getFullYear();
