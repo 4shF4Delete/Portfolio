@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <!-- Fluid zooming enabled for accessibility and better UX -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>John Ashley S. Sistona | Computer Engineer</title>
+    <title>John Ashley S. Sistona | Creative Engineer</title>
 
     <!-- 
       ========================================================
@@ -22,7 +22,7 @@
       ========================================================
     -->
     <style>
-        /* --- 1. CSS VARIABLES & THEME --- */
+        /* --- 1. CSS VARIABLES & THEME (GREEN UPDATE) --- */
         :root { 
             /* Core Colors */
             --bg-color: #050505; 
@@ -33,11 +33,11 @@
             --text-muted: #86868b;
             --text-dark: #111111;
             
-            /* Accents */
-            --accent-primary: #3b82f6;   /* Electric Blue */
-            --accent-secondary: #8b5cf6; /* Deep Purple */
-            --accent-tertiary: #10b981;  /* Matrix Green */
-            --accent-glow: rgba(59, 130, 246, 0.5);
+            /* Accents - Emerald Green Theme */
+            --accent-primary: #10b981;   /* Emerald Green */
+            --accent-secondary: #06b6d4; /* Teal / Cyan Accent */
+            --accent-tertiary: #3b82f6;  /* Deep Blue */
+            --accent-glow: rgba(16, 185, 129, 0.5);
             
             /* Glassmorphism Variables */
             --glass-bg: rgba(255, 255, 255, 0.03);
@@ -441,7 +441,7 @@
             border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; 
             border: 1px solid var(--glass-border-highlight); 
             animation: morph 15s linear infinite; 
-            box-shadow: inset 0 0 40px rgba(59, 130, 246, 0.1);
+            box-shadow: inset 0 0 40px rgba(16, 185, 129, 0.1);
         }
         
         .profile-pic { 
@@ -546,38 +546,85 @@
         .skill-pill:hover .skill-content { transform: translateY(-100%); opacity: 0; }
         .skill-pill:hover .skill-rating { transform: translateY(0); }
         
-        /* --- 12. CREATIVE ARCHIVE (Filterable Masonry Grid) --- */
-        .filter-controls { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 40px; }
+        /* --- 12. CREATIVE ARCHIVE (Filterable Masonry Grid with Expansion) --- */
+        .filter-controls { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 40px; position: relative; z-index: 10; }
         .filter-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-muted); padding: 10px 24px; border-radius: 50px; font-family: 'Inter', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; }
         .filter-btn:hover { color: var(--text-main); border-color: rgba(255,255,255,0.2); }
         .filter-btn.active { background: var(--accent-primary); color: var(--bg-color); border-color: var(--accent-primary); font-weight: 600; }
 
+        .archive-wrapper {
+            position: relative;
+            max-height: 800px;
+            overflow: hidden;
+            transition: max-height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
         .masonry-grid { column-count: 3; column-gap: 20px; width: 100%; transition: all 0.5s ease; }
         .masonry-item { break-inside: avoid; margin-bottom: 20px; position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--glass-border); transition: transform 0.4s ease, opacity 0.4s ease; transform: scale(1); opacity: 1; }
         .masonry-item.hide { display: none; }
-        .masonry-item img { width: 100%; display: block; border-radius: 16px; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        .masonry-item img { 
+            width: 100%; display: block; border-radius: 16px; 
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+            filter: grayscale(100%) opacity(0.6); 
+        }
+        .masonry-item:hover img { 
+            transform: scale(1.05); 
+            filter: grayscale(0%) opacity(1);
+        }
 
         .masonry-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 20px; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 70%, transparent 100%); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; justify-content: flex-end; }
         .masonry-item:hover .masonry-overlay { transform: translateY(0); }
-        .masonry-item:hover img { transform: scale(1.05); }
 
         .masonry-overlay h4 { color: var(--accent-primary); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; font-weight: 600; }
         .masonry-overlay h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; color: var(--text-main); margin-bottom: 2px; }
         .masonry-overlay p { color: #aaa; font-size: 0.85rem; font-weight: 300; }
 
+        /* The fade block for the collapsed state */
+        .archive-fade {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 350px;
+            background: linear-gradient(to top, var(--bg-color) 15%, transparent);
+            display: flex; align-items: flex-end; justify-content: center;
+            padding-bottom: 20px; z-index: 10;
+        }
+
+        /* Expanded Mode Styles */
+        #archive.expanded {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            max-width: none; z-index: 9999; background: var(--bg-color);
+            overflow-y: auto; padding: 60px 5vw;
+        }
+        #archive.expanded .archive-wrapper { max-height: none; overflow: visible; }
+        #archive.expanded .archive-fade { display: none; }
+        
+        .close-archive-btn {
+            display: none; position: fixed; top: 30px; right: 30px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            color: var(--text-main); font-size: 1.5rem; width: 50px; height: 50px;
+            border-radius: 50%; z-index: 10000; cursor: pointer;
+            backdrop-filter: blur(10px); transition: all 0.3s;
+        }
+        .close-archive-btn:hover { background: var(--accent-primary); color: var(--bg-color); transform: scale(1.1); }
+        #archive.expanded .close-archive-btn { display: flex; align-items: center; justify-content: center; }
+
         @media (max-width: 1024px) { .masonry-grid { column-count: 2; } }
         @media (max-width: 600px) { .masonry-grid { column-count: 1; } }
 
-        /* --- 13. CERTIFICATION CAROUSEL --- */
-        .cert-section { overflow: hidden; padding: 8vh 0; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); margin: 5vh 0; background: rgba(0,0,0,0.3); position: relative; }
+        /* --- 13. CERTIFICATION CAROUSEL (JS DRIVEN UPGRADE) --- */
+        .cert-section { 
+            overflow: hidden; padding: 8vh 0; border-top: 1px solid var(--glass-border); 
+            border-bottom: 1px solid var(--glass-border); margin: 5vh 0; 
+            background: rgba(0,0,0,0.3); position: relative; touch-action: pan-y; 
+        }
         .cert-section::before, .cert-section::after { content: ''; position: absolute; top: 0; width: 15vw; height: 100%; z-index: 5; pointer-events: none; }
         .cert-section::before { left: 0; background: linear-gradient(to right, var(--bg-color), transparent); }
         .cert-section::after { right: 0; background: linear-gradient(to left, var(--bg-color), transparent); }
-        .carousel-track { display: flex; width: max-content; animation: ultraScroll 35s linear infinite; align-items: center; }
-        .carousel-track:hover { animation-play-state: paused; }
-        .cert-img { height: 260px; width: auto; margin-right: 40px; border-radius: var(--radius-md); filter: grayscale(100%) opacity(0.4); transition: all 0.5s ease; border: 1px solid var(--glass-border); }
+        
+        /* Removed CSS animation to let JS handle interaction */
+        .carousel-track { display: flex; width: max-content; align-items: center; will-change: transform; }
+        
+        .cert-img { height: 260px; width: auto; margin-right: 40px; border-radius: var(--radius-md); filter: grayscale(100%) opacity(0.4); transition: filter 0.5s ease, transform 0.5s ease, border-color 0.5s ease; border: 1px solid var(--glass-border); cursor: pointer; pointer-events: auto; }
         .cert-img:hover { filter: grayscale(0%) opacity(1); transform: scale(1.03); z-index: 10; box-shadow: 0 20px 40px rgba(0,0,0,0.8); border-color: var(--glass-border-highlight); }
-        @keyframes ultraScroll { to { transform: translateX(-50%); } }
 
         /* --- 14. CONTACT & FOOTER SECTION --- */
         .contact-section { text-align: center; padding: 15vh var(--section-padding-x) 10vh; position: relative; }
@@ -640,8 +687,8 @@
         .chat-input-area button { background: var(--text-main); color: var(--bg-color); border: none; width: 50px; height: 50px; border-radius: 50%; margin-left: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.3s; }
         .chat-input-area button:hover { transform: scale(1.05); }
 
-        /* --- 16. MODAL --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        /* --- 16. MODALS (Contact & Lightbox) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-box { background: rgba(15, 15, 15, 0.9); border: 1px solid var(--glass-border); width: 90%; max-width: 550px; border-radius: 24px; padding: 50px; transform: translateY(40px) scale(0.95); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
         .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
@@ -650,7 +697,8 @@
         .form-group input:focus, .form-group textarea:focus { border-color: var(--text-main); }
         .submit-btn { width: 100%; background: var(--text-main); color: var(--bg-color); border: none; padding: 18px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: transform 0.3s; }
         .submit-btn:hover { transform: translateY(-2px); }
-        .close-modal { position: absolute; top: 25px; right: 25px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+        .close-modal { position: absolute; top: 25px; right: 25px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
+        .close-modal:hover { color: var(--text-main); }
 
         /* --- 17. RESPONSIVE DESIGN (Media Queries) --- */
         @media (max-width: 1100px) {
@@ -1018,203 +1066,216 @@
         </div>
     </div>
 
-    <!-- NEW SECTION: Creative Archive (Filterable Masonry Grid) -->
+    <!-- Section: Creative Archive (Filterable Masonry Grid with Expansion) -->
     <div class="section-container" id="archive">
+        
+        <!-- Expanded Close Button -->
+        <button class="close-archive-btn cursor-hover" id="close-archive-btn"><i class="fas fa-times"></i></button>
+
         <h2 class="section-title reveal">Creative Archive</h2>
         
         <div class="filter-controls reveal delay-1">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="apparel">Apparel & Brand</button>
-            <button class="filter-btn" data-filter="cinema">Cinematography</button>
-            <button class="filter-btn" data-filter="uiux">UI / UX Web</button>
+            <button class="filter-btn active cursor-hover" data-filter="all">All</button>
+            <button class="filter-btn cursor-hover" data-filter="apparel">Apparel & Brand</button>
+            <button class="filter-btn cursor-hover" data-filter="cinema">Cinematography</button>
+            <button class="filter-btn cursor-hover" data-filter="uiux">UI / UX Web</button>
         </div>
 
-        <div class="masonry-grid reveal delay-2" id="masonry-grid">
-            
-            <div class="masonry-item apparel">
-                <img src="static/1.jpg" alt="Artwork 1" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=1.jpg'">
-                <div class="masonry-overlay">
-                    <h4>Apparel & Brand</h4>
-                    <h3>Collection Title</h3>
-                    <p>Photoshop • Illustrator</p>
+        <div class="archive-wrapper reveal delay-2">
+            <div class="masonry-grid" id="masonry-grid">
+                
+                <div class="masonry-item apparel">
+                    <img src="static/1.jpg" alt="Artwork 1" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=1.jpg'">
+                    <div class="masonry-overlay">
+                        <h4>Apparel & Brand</h4>
+                        <h3>Collection Title</h3>
+                        <p>Photoshop • Illustrator</p>
+                    </div>
                 </div>
+
+                <div class="masonry-item uiux">
+                    <img src="static/2.png" alt="Artwork 2" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=2.png'">
+                    <div class="masonry-overlay">
+                        <h4>UI / UX Web</h4>
+                        <h3>Interface Design</h3>
+                        <p>Figma</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item cinema">
+                    <img src="static/3.png" alt="Artwork 3" onerror="this.src='https://via.placeholder.com/800x1200/111/444?text=3.png'">
+                    <div class="masonry-overlay">
+                        <h4>Cinematography</h4>
+                        <h3>Lighting Setup</h3>
+                        <p>Camera • Veo</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item apparel">
+                    <img src="static/4.png" alt="Artwork 4" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=4.png'">
+                    <div class="masonry-overlay">
+                        <h4>Apparel & Brand</h4>
+                        <h3>Streetwear Concept</h3>
+                        <p>Graphic Design</p>
+                    </div>
+                </div>
+                
+                <div class="masonry-item uiux">
+                    <img src="static/5.png" alt="Artwork 5" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=5.png'">
+                    <div class="masonry-overlay">
+                        <h4>UI / UX Web</h4>
+                        <h3>Mobile Application</h3>
+                        <p>Prototyping</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item cinema">
+                    <img src="static/6.jpg" alt="Artwork 6" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=6.jpg'">
+                    <div class="masonry-overlay">
+                        <h4>Cinematography</h4>
+                        <h3>Scene Render</h3>
+                        <p>Color Grading</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item apparel">
+                    <img src="static/7.jpg" alt="Artwork 7" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=7.jpg'">
+                    <div class="masonry-overlay">
+                        <h4>Apparel & Brand</h4>
+                        <h3>Jersey Mockup</h3>
+                        <p>Photoshop</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item uiux">
+                    <img src="static/8.jpg" alt="Artwork 8" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=8.jpg'">
+                    <div class="masonry-overlay">
+                        <h4>UI / UX Web</h4>
+                        <h3>Dashboard</h3>
+                        <p>Figma</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item apparel">
+                    <img src="static/9.png" alt="Artwork 9" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=9.png'">
+                    <div class="masonry-overlay">
+                        <h4>Apparel & Brand</h4>
+                        <h3>Brand Identity</h3>
+                        <p>Vector Art</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item uiux">
+                    <img src="static/9.1.png" alt="Artwork 9.1" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=9.1.png'">
+                    <div class="masonry-overlay">
+                        <h4>UI / UX Web</h4>
+                        <h3>Wireframe</h3>
+                        <p>Prototyping</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item cinema">
+                    <img src="static/9.2.png" alt="Artwork 9.2" onerror="this.src='https://via.placeholder.com/800x1200/111/444?text=9.2.png'">
+                    <div class="masonry-overlay">
+                        <h4>Cinematography</h4>
+                        <h3>Subject Focus</h3>
+                        <p>Visual Style</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item apparel">
+                    <img src="static/10.png" alt="Artwork 10" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=10.png'">
+                    <div class="masonry-overlay">
+                        <h4>Apparel & Brand</h4>
+                        <h3>Merch Design</h3>
+                        <p>Graphic Layout</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item uiux">
+                    <img src="static/10.1.jpg" alt="Artwork 10.1" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=10.1.jpg'">
+                    <div class="masonry-overlay">
+                        <h4>UI / UX Web</h4>
+                        <h3>Web Portal</h3>
+                        <p>Figma</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item apparel">
+                    <img src="static/13.jpg" alt="Artwork 13" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=13.jpg'">
+                    <div class="masonry-overlay">
+                        <h4>Apparel & Brand</h4>
+                        <h3>Print Layout</h3>
+                        <p>Illustrator</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item uiux">
+                    <img src="static/14.jpg" alt="Artwork 14" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=14.jpg'">
+                    <div class="masonry-overlay">
+                        <h4>UI / UX Web</h4>
+                        <h3>App Concept</h3>
+                        <p>UI Design</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item cinema">
+                    <img src="static/15.png" alt="Artwork 15" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=15.png'">
+                    <div class="masonry-overlay">
+                        <h4>Cinematography</h4>
+                        <h3>Environment</h3>
+                        <p>Lighting</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item apparel">
+                    <img src="static/16.png" alt="Artwork 16" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=16.png'">
+                    <div class="masonry-overlay">
+                        <h4>Apparel & Brand</h4>
+                        <h3>Typographic Print</h3>
+                        <p>Typography</p>
+                    </div>
+                </div>
+
+                <div class="masonry-item uiux">
+                    <img src="static/17.png" alt="Artwork 17" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=17.png'">
+                    <div class="masonry-overlay">
+                        <h4>UI / UX Web</h4>
+                        <h3>Interactive Prototype</h3>
+                        <p>Figma</p>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="masonry-item uiux">
-                <img src="static/2.png" alt="Artwork 2" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=2.png'">
-                <div class="masonry-overlay">
-                    <h4>UI / UX Web</h4>
-                    <h3>Interface Design</h3>
-                    <p>Figma</p>
-                </div>
+            <!-- Gradient overlay for compact view -->
+            <div class="archive-fade" id="archive-fade">
+                <button class="premium-btn cursor-hover" id="expand-archive-btn" style="padding: 15px 40px; font-size: 1rem;">
+                    <span>View Full Archive</span> <i class="fas fa-expand"></i>
+                </button>
             </div>
-
-            <div class="masonry-item cinema">
-                <img src="static/3.png" alt="Artwork 3" onerror="this.src='https://via.placeholder.com/800x1200/111/444?text=3.png'">
-                <div class="masonry-overlay">
-                    <h4>Cinematography</h4>
-                    <h3>Lighting Setup</h3>
-                    <p>Camera • Veo</p>
-                </div>
-            </div>
-
-            <div class="masonry-item apparel">
-                <img src="static/4.png" alt="Artwork 4" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=4.png'">
-                <div class="masonry-overlay">
-                    <h4>Apparel & Brand</h4>
-                    <h3>Streetwear Concept</h3>
-                    <p>Graphic Design</p>
-                </div>
-            </div>
-            
-            <div class="masonry-item uiux">
-                <img src="static/5.png" alt="Artwork 5" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=5.png'">
-                <div class="masonry-overlay">
-                    <h4>UI / UX Web</h4>
-                    <h3>Mobile Application</h3>
-                    <p>Prototyping</p>
-                </div>
-            </div>
-
-            <div class="masonry-item cinema">
-                <img src="static/6.jpg" alt="Artwork 6" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=6.jpg'">
-                <div class="masonry-overlay">
-                    <h4>Cinematography</h4>
-                    <h3>Scene Render</h3>
-                    <p>Color Grading</p>
-                </div>
-            </div>
-
-            <div class="masonry-item apparel">
-                <img src="static/7.jpg" alt="Artwork 7" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=7.jpg'">
-                <div class="masonry-overlay">
-                    <h4>Apparel & Brand</h4>
-                    <h3>Jersey Mockup</h3>
-                    <p>Photoshop</p>
-                </div>
-            </div>
-
-            <div class="masonry-item uiux">
-                <img src="static/8.jpg" alt="Artwork 8" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=8.jpg'">
-                <div class="masonry-overlay">
-                    <h4>UI / UX Web</h4>
-                    <h3>Dashboard</h3>
-                    <p>Figma</p>
-                </div>
-            </div>
-
-            <div class="masonry-item apparel">
-                <img src="static/9.png" alt="Artwork 9" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=9.png'">
-                <div class="masonry-overlay">
-                    <h4>Apparel & Brand</h4>
-                    <h3>Brand Identity</h3>
-                    <p>Vector Art</p>
-                </div>
-            </div>
-
-            <div class="masonry-item uiux">
-                <img src="static/9.1.png" alt="Artwork 9.1" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=9.1.png'">
-                <div class="masonry-overlay">
-                    <h4>UI / UX Web</h4>
-                    <h3>Wireframe</h3>
-                    <p>Prototyping</p>
-                </div>
-            </div>
-
-            <div class="masonry-item cinema">
-                <img src="static/9.2.png" alt="Artwork 9.2" onerror="this.src='https://via.placeholder.com/800x1200/111/444?text=9.2.png'">
-                <div class="masonry-overlay">
-                    <h4>Cinematography</h4>
-                    <h3>Subject Focus</h3>
-                    <p>Visual Style</p>
-                </div>
-            </div>
-
-            <div class="masonry-item apparel">
-                <img src="static/10.png" alt="Artwork 10" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=10.png'">
-                <div class="masonry-overlay">
-                    <h4>Apparel & Brand</h4>
-                    <h3>Merch Design</h3>
-                    <p>Graphic Layout</p>
-                </div>
-            </div>
-
-            <div class="masonry-item uiux">
-                <img src="static/10.1.jpg" alt="Artwork 10.1" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=10.1.jpg'">
-                <div class="masonry-overlay">
-                    <h4>UI / UX Web</h4>
-                    <h3>Web Portal</h3>
-                    <p>Figma</p>
-                </div>
-            </div>
-
-            <div class="masonry-item apparel">
-                <img src="static/13.jpg" alt="Artwork 13" onerror="this.src='https://via.placeholder.com/600x600/111/444?text=13.jpg'">
-                <div class="masonry-overlay">
-                    <h4>Apparel & Brand</h4>
-                    <h3>Print Layout</h3>
-                    <p>Illustrator</p>
-                </div>
-            </div>
-
-            <div class="masonry-item uiux">
-                <img src="static/14.jpg" alt="Artwork 14" onerror="this.src='https://via.placeholder.com/600x900/111/444?text=14.jpg'">
-                <div class="masonry-overlay">
-                    <h4>UI / UX Web</h4>
-                    <h3>App Concept</h3>
-                    <p>UI Design</p>
-                </div>
-            </div>
-
-            <div class="masonry-item cinema">
-                <img src="static/15.png" alt="Artwork 15" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=15.png'">
-                <div class="masonry-overlay">
-                    <h4>Cinematography</h4>
-                    <h3>Environment</h3>
-                    <p>Lighting</p>
-                </div>
-            </div>
-
-            <div class="masonry-item apparel">
-                <img src="static/16.png" alt="Artwork 16" onerror="this.src='https://via.placeholder.com/600x800/111/444?text=16.png'">
-                <div class="masonry-overlay">
-                    <h4>Apparel & Brand</h4>
-                    <h3>Typographic Print</h3>
-                    <p>Typography</p>
-                </div>
-            </div>
-
-            <div class="masonry-item uiux">
-                <img src="static/17.png" alt="Artwork 17" onerror="this.src='https://via.placeholder.com/800x600/111/444?text=17.png'">
-                <div class="masonry-overlay">
-                    <h4>UI / UX Web</h4>
-                    <h3>Interactive Prototype</h3>
-                    <p>Figma</p>
-                </div>
-            </div>
-
         </div>
     </div>
 
-    <!-- Section: Certifications (Infinite Carousel) -->
+    <!-- Section: Certifications (JS Infinite Carousel) -->
     <section class="cert-section reveal">
         <div class="carousel-container">
             <div class="carousel-track">
                 <!-- Original set -->
-                <img src="static/cert1.jpg" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
-                <img src="static/cert2.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
-                <img src="static/cert3.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
-                <img src="static/cert4.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
-                <img src="static/cert5.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
-                <img src="static/cert6.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert1.jpg" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert2.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert3.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert4.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert5.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert6.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
 
                 <!-- Duplicated set for seamless infinite scroll -->
-                <img src="static/cert1.jpg" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
-                <img src="static/cert2.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
-                <img src="static/cert3.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
-                <img src="static/cert4.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
-                <img src="static/cert5.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
-                <img src="static/cert6.png" class="cert-img" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert1.jpg" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert2.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert3.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert4.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert5.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
+                <img src="static/cert6.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/111/444?text=Certification'">
             </div>
         </div>
     </section>
@@ -1241,10 +1302,10 @@
         </div>
     </section>
 
-    <!-- MODAL (From Original Code) -->
+    <!-- MODAL: Contact Form -->
     <div class="modal-overlay" id="contact-modal">
         <div class="modal-box">
-            <button class="close-modal" id="close-contact-btn"><i class="fas fa-times"></i></button>
+            <button class="close-modal cursor-hover" id="close-contact-btn"><i class="fas fa-times"></i></button>
             <h2>Start a dialogue</h2>
             <form id="contact-form">
                 <div class="form-group"><input type="text" id="sender-name" placeholder="Your Name" required></div>
@@ -1254,8 +1315,16 @@
         </div>
     </div>
 
-    <!-- ECOSYSTEM CHAT UI (From Original Code) -->
-    <div id="chat-toggle-btn" class="chat-toggle-btn"><i class="fas fa-sparkles"></i></div>
+    <!-- MODAL: Lightbox for Certificates -->
+    <div class="modal-overlay" id="lightbox-modal">
+        <div class="modal-box" style="background: transparent; border: none; max-width: 90vw; text-align: center; display: flex; justify-content: center; align-items: center; padding: 0; box-shadow: none;">
+            <button class="close-modal cursor-hover" id="close-lightbox-btn" style="top: -40px; right: 0;"><i class="fas fa-times"></i></button>
+            <img id="lightbox-img" src="" style="max-width: 100%; max-height: 85vh; border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 30px 60px rgba(0,0,0,0.8);">
+        </div>
+    </div>
+
+    <!-- ECOSYSTEM CHAT UI -->
+    <div id="chat-toggle-btn" class="chat-toggle-btn cursor-hover"><i class="fas fa-sparkles"></i></div>
 
     <div id="chat-container" class="chat-container">
         <div class="chat-header" id="chat-drag-handle">
@@ -1284,22 +1353,18 @@
         // ----------------------------------------------------
         const introScreen = document.getElementById('intro-screen');
         
-        // Wait strictly for user click to proceed.
         introScreen.addEventListener('click', dismissIntro);
 
         function dismissIntro() {
             if(!introScreen.classList.contains('intro-hidden')) {
-                // Apply the slide-up CSS transition class
                 introScreen.classList.add('intro-hidden');
                 document.body.classList.remove('locked');
-                
-                // Allow the 1.2s CSS transition to finish before hiding from DOM
                 setTimeout(() => introScreen.style.display = 'none', 1200);
             }
         }
 
         // ----------------------------------------------------
-        // 2. CUSTOM CURSOR LOGIC
+        // 2. CUSTOM CURSOR LOGIC (Updated to Green)
         // ----------------------------------------------------
         const cursorDot = document.getElementById('cursor-dot');
         const cursorOutline = document.getElementById('cursor-outline');
@@ -1334,7 +1399,7 @@
             el.addEventListener('mouseenter', () => {
                 cursorOutline.style.width = '60px';
                 cursorOutline.style.height = '60px';
-                cursorOutline.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                cursorOutline.style.backgroundColor = 'rgba(16, 185, 129, 0.1)'; // Emerald Green Glow
             });
             el.addEventListener('mouseleave', () => {
                 cursorOutline.style.width = '40px';
@@ -1453,14 +1518,11 @@
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                    
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
-                    
                     const maxTilt = 10;
                     const rotateX = ((y - centerY) / centerY) * -maxTilt;
                     const rotateY = ((x - centerX) / centerX) * maxTilt;
-                    
                     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
                 });
                 
@@ -1476,7 +1538,7 @@
         }
 
         // ----------------------------------------------------
-        // 7. MODAL LOGIC (Original Form Code)
+        // 7. MODALS LOGIC (Contact & Lightbox)
         // ----------------------------------------------------
         const contactModal = document.getElementById('contact-modal');
         document.getElementById('open-contact-btn').addEventListener('click', () => contactModal.classList.add('active'));
@@ -1489,12 +1551,28 @@
             contactModal.classList.remove('active');
         });
 
+        // Certificate Lightbox Event
+        const lightboxModal = document.getElementById('lightbox-modal');
+        const lightboxImg = document.getElementById('lightbox-img');
+        document.getElementById('close-lightbox-btn').addEventListener('click', () => lightboxModal.classList.remove('active'));
+        
+        document.querySelectorAll('.cert-img').forEach(img => {
+            img.addEventListener('click', () => {
+                lightboxImg.src = img.src;
+                lightboxModal.classList.add('active');
+            });
+        });
+
         // ----------------------------------------------------
-        // 8. MASONRY FILTER LOGIC
+        // 8. ARCHIVE MASONRY: Filter & Expand Full Screen
         // ----------------------------------------------------
         const filterBtns = document.querySelectorAll('.filter-btn');
         const masonryItems = document.querySelectorAll('.masonry-item');
+        const archiveSection = document.getElementById('archive');
+        const expandArchiveBtn = document.getElementById('expand-archive-btn');
+        const closeArchiveBtn = document.getElementById('close-archive-btn');
 
+        // Filter Logic
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
@@ -1518,8 +1596,93 @@
             });
         });
 
+        // Expand to Full Screen Overlay
+        expandArchiveBtn.addEventListener('click', () => {
+            archiveSection.classList.add('expanded');
+            document.body.classList.add('locked'); 
+        });
+        
+        // Close Overlay and Return to Section
+        closeArchiveBtn.addEventListener('click', () => {
+            archiveSection.classList.remove('expanded');
+            document.body.classList.remove('locked');
+            archiveSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
         // ----------------------------------------------------
-        // 9. AI CHATBOT API INTERACTION
+        // 9. CERTIFICATE CAROUSEL: JS Physics Engine (Hover/Drag)
+        // ----------------------------------------------------
+        const certSection = document.querySelector('.cert-section');
+        const certTrack = document.querySelector('.carousel-track');
+        let certPos = 0;
+        let certSpeed = 1;
+        let certIsDragging = false;
+        let certStartX = 0;
+
+        function animateCertificates() {
+            if (!certIsDragging) {
+                certPos += certSpeed;
+                // Since the images are duplicated exactly once, half of the scrollWidth is the wrap point.
+                const halfWidth = certTrack.scrollWidth / 2;
+                
+                if (certPos >= halfWidth) certPos -= halfWidth; 
+                if (certPos < 0) certPos += halfWidth; 
+                
+                certTrack.style.transform = `translateX(-${certPos}px)`;
+            }
+            requestAnimationFrame(animateCertificates);
+        }
+        
+        // Start Carousel Loop (requires images to load to get scrollWidth, so adding a slight delay)
+        setTimeout(animateCertificates, 500);
+
+        // Hover Direction/Speed Logic
+        certSection.addEventListener('mousemove', (e) => {
+            if(certIsDragging) return;
+            const rect = certSection.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const width = rect.width;
+            
+            if (mouseX < width * 0.33) {
+                certSpeed = 3; // Fast Left
+            } else if (mouseX > width * 0.66) {
+                certSpeed = -2; // Reverse Right
+            } else {
+                certSpeed = 1; // Normal Center
+            }
+        });
+
+        certSection.addEventListener('mouseleave', () => {
+            certSpeed = 1;
+        });
+
+        // Mouse Drag / Touch Swipe Logic
+        const startDrag = (x) => { certIsDragging = true; certStartX = x; certSection.style.cursor = 'grabbing'; };
+        const performDrag = (x) => {
+            if(!certIsDragging) return;
+            const delta = certStartX - x;
+            certPos += delta;
+            certStartX = x;
+            const halfWidth = certTrack.scrollWidth / 2;
+            if (certPos >= halfWidth) certPos -= halfWidth;
+            if (certPos < 0) certPos += halfWidth;
+            certTrack.style.transform = `translateX(-${certPos}px)`;
+        };
+        const endDrag = () => { if(certIsDragging) { certIsDragging = false; certSection.style.cursor = 'default'; } };
+
+        // Desktop Mouse Drag
+        certSection.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(e.clientX); });
+        document.addEventListener('mousemove', (e) => performDrag(e.clientX));
+        document.addEventListener('mouseup', endDrag);
+
+        // Mobile Touch Swipe
+        certSection.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX));
+        certSection.addEventListener('touchmove', (e) => performDrag(e.touches[0].clientX));
+        certSection.addEventListener('touchend', endDrag);
+
+
+        // ----------------------------------------------------
+        // 10. AI CHATBOT API INTERACTION
         // ----------------------------------------------------
         const chatInput = document.getElementById('chat-input');
         const chatSendBtn = document.getElementById('chat-send-btn');
@@ -1564,7 +1727,7 @@
         chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
         // ----------------------------------------------------
-        // 10. DRAG & DROP UI LOGIC (Toggle Button + Chat Container)
+        // 11. DRAG & DROP UI LOGIC (Toggle Button + Chat Container)
         // ----------------------------------------------------
         const toggleBtn = document.getElementById('chat-toggle-btn');
         const chatContainer = document.getElementById('chat-container');
