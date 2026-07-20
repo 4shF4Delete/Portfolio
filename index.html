@@ -129,7 +129,7 @@
         }
         .ambient-glow { 
             position: absolute; border-radius: 50%; filter: blur(160px); 
-            opacity: 0.12; /* Subtle enough to not overwhelm, but visible */
+            opacity: 0.12; 
             animation: lava 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); 
             will-change: transform;
         }
@@ -281,13 +281,17 @@
         .hero-visual:hover .visual-frame {
             border-color: var(--glass-border-highlight);
         }
+        
+        /* Profile Pic - Full color, no more grayscale! Just a smooth scale effect on hover */
         .profile-pic { 
             width: 85%; height: 85%; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
             object-fit: cover; animation: morph 15s linear infinite reverse; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9); z-index: 2; filter: grayscale(100%);
-            transition: filter 0.5s ease;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9); z-index: 2; 
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .hero-visual:hover .profile-pic { filter: grayscale(30%); }
+        .hero-visual:hover .profile-pic { 
+            transform: scale(1.03); 
+        }
 
         @keyframes morph { 
             0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; } 
@@ -342,18 +346,55 @@
         .tag { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; color: #999; font-family: 'JetBrains Mono', monospace; transition: border-color 0.4s; }
         .glass-card:hover .tag { border-color: rgba(255,255,255,0.1); color: #ccc; }
 
-        /* --- 10. TIMELINE / TRAJECTORY --- */
+        /* --- 10. TIMELINE / TRAJECTORY (Upgraded Glass Nodes) --- */
         .timeline-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
-        .timeline { border-left: 1px solid var(--glass-border); padding-left: 30px; margin-left: 15px; }
-        .timeline-item { position: relative; margin-bottom: 50px; }
-        .timeline-item::before { content: ''; position: absolute; left: -36px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--bg-color); border: 1px solid #555; transition: var(--transition-fast); }
-        .timeline-item:hover::before { background: var(--text-main); border-color: var(--text-main); box-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .timeline-date { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #666; letter-spacing: 1px; margin-bottom: 8px; font-weight: 500; text-transform: uppercase; transition: color 0.3s; }
-        .timeline-item:hover .timeline-date { color: var(--text-muted); }
-        .timeline-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; margin-bottom: 8px; color: #ccc; font-weight: 600; transition: color 0.3s; }
+        
+        .timeline { border-left: 2px solid var(--glass-border); padding-left: 40px; margin-left: 20px; position: relative; }
+        
+        /* Glowing track that highlights on hover */
+        .timeline::before {
+            content: ''; position: absolute; top: 0; left: -2px; width: 2px; height: 0%;
+            background: linear-gradient(to bottom, var(--accent-primary), transparent);
+            transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .timeline-wrapper:hover .timeline::before { height: 100%; }
+
+        .timeline-item { 
+            position: relative; margin-bottom: 40px; padding: 25px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md); backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: left center;
+        }
+        
+        /* Outer Dot */
+        .timeline-item::before { 
+            content: ''; position: absolute; left: -49px; top: 30px; width: 16px; height: 16px; 
+            border-radius: 50%; background: var(--bg-color); border: 2px solid #555; 
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2;
+        }
+        /* Connection Line to Card */
+        .timeline-item::after {
+            content: ''; position: absolute; left: -33px; top: 37px; width: 33px; height: 2px;
+            background: var(--glass-border); transition: all 0.4s ease; z-index: 1;
+        }
+        
+        .timeline-item:hover { 
+            border-color: var(--glass-border-highlight); background: var(--glass-bg-hover);
+            transform: translateX(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .timeline-item:hover::before { 
+            background: var(--accent-primary); border-color: var(--accent-primary); 
+            box-shadow: 0 0 15px var(--accent-glow); transform: scale(1.2); 
+        }
+        .timeline-item:hover::after {
+            background: var(--accent-primary);
+        }
+        
+        .timeline-date { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-secondary); letter-spacing: 1px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+        .timeline-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; margin-bottom: 8px; color: #ddd; font-weight: 700; transition: color 0.3s; }
         .timeline-item:hover .timeline-title { color: #fff; }
-        .timeline-subtitle { font-size: 1rem; color: #666; margin-bottom: 10px; font-weight: 300; transition: color 0.3s; }
-        .timeline-item:hover .timeline-subtitle { color: #aaa; }
+        .timeline-subtitle { font-size: 1rem; color: var(--text-muted); margin-bottom: 0; font-weight: 300; }
 
         /* --- 11. TECHNICAL SKILLS --- */
         .skills-wrapper { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; max-width: 1000px; margin: 0 auto; }
@@ -478,8 +519,16 @@
             .dost-badge { font-size: 0.75rem; padding: 6px 12px; }
             .hero-text h1 { font-size: clamp(2.5rem, 12vw, 4rem); margin-bottom: 15px; }
             .hero-text p { font-size: 1rem; } .hero-visual { width: 85vw; }
-            .glass-card h3 { font-size: 1.5rem; } .timeline { margin-left: 5px; padding-left: 20px; }
-            .timeline-item::before { left: -26px; } .skill-pill { min-width: 100%; max-width: 350px; }
+            .glass-card h3 { font-size: 1.5rem; } 
+            
+            /* Responsive updates for the new Timeline nodes */
+            .timeline { margin-left: 5px; padding-left: 20px; border-left-width: 1px; }
+            .timeline-item { padding: 20px; margin-bottom: 30px; }
+            .timeline-item::before { left: -26px; width: 10px; height: 10px; top: 25px; }
+            .timeline-item::after { left: -16px; width: 16px; top: 29px; }
+            .timeline-item:hover { transform: translateX(5px); }
+            
+            .skill-pill { min-width: 100%; max-width: 350px; }
             .cert-img { height: 200px; margin-right: 20px; }
             .premium-btn { padding: 15px 30px; font-size: 1rem; } .social-links gap { gap: 15px; }
         }
@@ -1039,7 +1088,7 @@ function animateCursor() {
 }
 animateCursor();
 
-const hoverElements = document.querySelectorAll('a, button, .skill-pill, .tilt-card, #intro-screen, .cursor-hover');
+const hoverElements = document.querySelectorAll('a, button, .skill-pill, .tilt-card, #intro-screen, .cursor-hover, .timeline-item');
 
 hoverElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
