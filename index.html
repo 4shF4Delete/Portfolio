@@ -282,7 +282,7 @@
             border-color: var(--glass-border-highlight);
         }
         
-        /* Profile Pic - Full color, no more grayscale! Just a smooth scale effect on hover */
+        /* Profile Pic */
         .profile-pic { 
             width: 85%; height: 85%; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
             object-fit: cover; animation: morph 15s linear infinite reverse; 
@@ -346,12 +346,11 @@
         .tag { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 4px 12px; border-radius: var(--radius-pill); font-size: 0.75rem; color: #999; font-family: 'JetBrains Mono', monospace; transition: border-color 0.4s; }
         .glass-card:hover .tag { border-color: rgba(255,255,255,0.1); color: #ccc; }
 
-        /* --- 10. TIMELINE / TRAJECTORY (Upgraded Glass Nodes) --- */
+        /* --- 10. TIMELINE / TRAJECTORY --- */
         .timeline-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
         
         .timeline { border-left: 2px solid var(--glass-border); padding-left: 40px; margin-left: 20px; position: relative; }
         
-        /* Glowing track that highlights on hover */
         .timeline::before {
             content: ''; position: absolute; top: 0; left: -2px; width: 2px; height: 0%;
             background: linear-gradient(to bottom, var(--accent-primary), transparent);
@@ -367,13 +366,11 @@
             transform-origin: left center;
         }
         
-        /* Outer Dot */
         .timeline-item::before { 
             content: ''; position: absolute; left: -49px; top: 30px; width: 16px; height: 16px; 
             border-radius: 50%; background: var(--bg-color); border: 2px solid #555; 
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2;
         }
-        /* Connection Line to Card */
         .timeline-item::after {
             content: ''; position: absolute; left: -33px; top: 37px; width: 33px; height: 2px;
             background: var(--glass-border); transition: all 0.4s ease; z-index: 1;
@@ -422,8 +419,7 @@
         .masonry-item { break-inside: avoid; margin-bottom: 20px; position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--glass-border); transition: transform 0.4s ease, opacity 0.4s ease, border-color 0.4s ease; transform: scale(1); opacity: 1; }
         .masonry-item.hide { display: none; }
         
-        /* Grayscale to color hover effect */
-        .masonry-item img { width: 100%; display: block; border-radius: 16px; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease; filter: grayscale(100%) opacity(0.5); }
+        .masonry-item img { width: 100%; height: auto; display: block; border-radius: 16px; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease; filter: grayscale(100%) opacity(0.5); }
         .masonry-item:hover { border-color: var(--glass-border-highlight); }
         .masonry-item:hover img { transform: scale(1.05); filter: grayscale(0%) opacity(1); }
         
@@ -521,7 +517,6 @@
             .hero-text p { font-size: 1rem; } .hero-visual { width: 85vw; }
             .glass-card h3 { font-size: 1.5rem; } 
             
-            /* Responsive updates for the new Timeline nodes */
             .timeline { margin-left: 5px; padding-left: 20px; border-left-width: 1px; }
             .timeline-item { padding: 20px; margin-bottom: 30px; }
             .timeline-item::before { left: -26px; width: 10px; height: 10px; top: 25px; }
@@ -593,8 +588,8 @@
 
         <div class="hero-visual reveal delay-4">
             <div class="visual-frame"></div>
-            <!-- Fallback image provided if static/profile.jpg is missing -->
-            <img src="static/profile.jpg" alt="John Ashley S. Sistona" class="profile-pic" onerror="this.src='https://via.placeholder.com/500/050505/333333?text=JS'">
+            <!-- Not lazy loaded to ensure instant hero render -->
+            <img src="static/profile.avif" alt="John Ashley S. Sistona" class="profile-pic" width="500" height="500" onerror="this.src='https://via.placeholder.com/500/050505/333333?text=JS'">
         </div>
     </div>
 
@@ -854,7 +849,7 @@
     </div>
 </div>
 
-<!-- Section: Creative Archive (Sorted 1-17) -->
+<!-- Section: Creative Archive (Sorted 1-18) -->
 <div class="section-container" id="archive">
 
     <!-- Expanded Close Button -->
@@ -874,90 +869,95 @@
 
             <!-- CINEMATOGRAPHY: Images 1-8 -->
             <div class="masonry-item cinema">
-                <img src="static/1.jpg" alt="Cinematography 1" onerror="this.src='https://via.placeholder.com/600x800/050505/222222'">
+                <img src="static/1.avif" alt="Cinematography 1" loading="lazy" width="600" height="800" onerror="this.src='https://via.placeholder.com/600x800/050505/222222'">
                 <div class="masonry-overlay"><h4>Cinematography</h4><h3>Project 01</h3><p>Camera • Veo</p></div>
             </div>
 
             <div class="masonry-item cinema">
-                <img src="static/2.jpg" alt="Cinematography 2" onerror="this.src='https://via.placeholder.com/800x600/050505/222222'">
+                <img src="static/2.avif" alt="Cinematography 2" loading="lazy" width="800" height="600" onerror="this.src='https://via.placeholder.com/800x600/050505/222222'">
                 <div class="masonry-overlay"><h4>Cinematography</h4><h3>Project 02</h3><p>Camera • Veo</p></div>
             </div>
 
             <div class="masonry-item cinema">
-                <img src="static/3.jpg" alt="Cinematography 3" onerror="this.src='https://via.placeholder.com/800x1200/050505/222222'">
+                <img src="static/3.avif" alt="Cinematography 3" loading="lazy" width="800" height="1200" onerror="this.src='https://via.placeholder.com/800x1200/050505/222222'">
                 <div class="masonry-overlay"><h4>Cinematography</h4><h3>Project 03</h3><p>Lighting Setup</p></div>
             </div>
 
             <div class="masonry-item cinema">
-                <img src="static/4.jpg" alt="Cinematography 4" onerror="this.src='https://via.placeholder.com/600x600/050505/222222'">
+                <img src="static/4.avif" alt="Cinematography 4" loading="lazy" width="600" height="600" onerror="this.src='https://via.placeholder.com/600x600/050505/222222'">
                 <div class="masonry-overlay"><h4>Cinematography</h4><h3>Project 04</h3><p>Visual Style</p></div>
             </div>
 
             <div class="masonry-item cinema">
-                <img src="static/5.jpg" alt="Cinematography 5" onerror="this.src='https://via.placeholder.com/600x900/050505/222222'">
+                <img src="static/5.avif" alt="Cinematography 5" loading="lazy" width="600" height="900" onerror="this.src='https://via.placeholder.com/600x900/050505/222222'">
                 <div class="masonry-overlay"><h4>Cinematography</h4><h3>Project 05</h3><p>Environment</p></div>
             </div>
 
             <div class="masonry-item cinema">
-                <img src="static/6.jpg" alt="Cinematography 6" onerror="this.src='https://via.placeholder.com/800x600/050505/222222'">
+                <img src="static/6.avif" alt="Cinematography 6" loading="lazy" width="800" height="600" onerror="this.src='https://via.placeholder.com/800x600/050505/222222'">
                 <div class="masonry-overlay"><h4>Cinematography</h4><h3>Project 06</h3><p>Scene Render</p></div>
             </div>
 
             <div class="masonry-item cinema">
-                <img src="static/7.jpg" alt="Cinematography 7" onerror="this.src='https://via.placeholder.com/600x800/050505/222222'">
+                <img src="static/7.avif" alt="Cinematography 7" loading="lazy" width="600" height="800" onerror="this.src='https://via.placeholder.com/600x800/050505/222222'">
                 <div class="masonry-overlay"><h4>Cinematography</h4><h3>Project 07</h3><p>Color Grading</p></div>
             </div>
 
             <div class="masonry-item cinema">
-                <img src="static/8.jpg" alt="Cinematography 8" onerror="this.src='https://via.placeholder.com/800x600/050505/222222'">
+                <img src="static/8.avif" alt="Cinematography 8" loading="lazy" width="800" height="600" onerror="this.src='https://via.placeholder.com/800x600/050505/222222'">
                 <div class="masonry-overlay"><h4>Cinematography</h4><h3>Project 08</h3><p>Subject Focus</p></div>
             </div>
 
-            <!-- APPAREL: Images 9-14 -->
+            <!-- APPAREL: Images 9-15 -->
             <div class="masonry-item apparel">
-                <img src="static/9.jpg" alt="Apparel 9" onerror="this.src='https://via.placeholder.com/600x600/050505/222222'">
+                <img src="static/9.avif" alt="Apparel 9" loading="lazy" width="600" height="600" onerror="this.src='https://via.placeholder.com/600x600/050505/222222'">
                 <div class="masonry-overlay"><h4>Apparel & Brand</h4><h3>Project 09</h3><p>Graphic Design</p></div>
             </div>
 
             <div class="masonry-item apparel">
-                <img src="static/10.jpg" alt="Apparel 10" onerror="this.src='https://via.placeholder.com/600x800/050505/222222'">
+                <img src="static/10.avif" alt="Apparel 10" loading="lazy" width="600" height="800" onerror="this.src='https://via.placeholder.com/600x800/050505/222222'">
                 <div class="masonry-overlay"><h4>Apparel & Brand</h4><h3>Project 10</h3><p>Merch Design</p></div>
             </div>
 
             <div class="masonry-item apparel">
-                <img src="static/11.jpg" alt="Apparel 11" onerror="this.src='https://via.placeholder.com/600x900/050505/222222'">
+                <img src="static/11.avif" alt="Apparel 11" loading="lazy" width="600" height="900" onerror="this.src='https://via.placeholder.com/600x900/050505/222222'">
                 <div class="masonry-overlay"><h4>Apparel & Brand</h4><h3>Project 11</h3><p>Streetwear Concept</p></div>
             </div>
 
             <div class="masonry-item apparel">
-                <img src="static/12.jpg" alt="Apparel 12" onerror="this.src='https://via.placeholder.com/800x1200/050505/222222'">
+                <img src="static/12.avif" alt="Apparel 12" loading="lazy" width="800" height="1200" onerror="this.src='https://via.placeholder.com/800x1200/050505/222222'">
                 <div class="masonry-overlay"><h4>Apparel & Brand</h4><h3>Project 12</h3><p>Jersey Mockup</p></div>
             </div>
 
             <div class="masonry-item apparel">
-                <img src="static/13.jpg" alt="Apparel 13" onerror="this.src='https://via.placeholder.com/600x600/050505/222222'">
+                <img src="static/13.avif" alt="Apparel 13" loading="lazy" width="600" height="600" onerror="this.src='https://via.placeholder.com/600x600/050505/222222'">
                 <div class="masonry-overlay"><h4>Apparel & Brand</h4><h3>Project 13</h3><p>Brand Identity</p></div>
             </div>
 
             <div class="masonry-item apparel">
-                <img src="static/14.jpg" alt="Apparel 14" onerror="this.src='https://via.placeholder.com/600x900/050505/222222'">
+                <img src="static/14.avif" alt="Apparel 14" loading="lazy" width="600" height="900" onerror="this.src='https://via.placeholder.com/600x900/050505/222222'">
                 <div class="masonry-overlay"><h4>Apparel & Brand</h4><h3>Project 14</h3><p>Print Layout</p></div>
             </div>
 
-            <!-- WEB / UIUX: Images 15-17 -->
+            <div class="masonry-item apparel">
+                <img src="static/15.avif" alt="Apparel 15" loading="lazy" width="800" height="600" onerror="this.src='https://via.placeholder.com/800x600/050505/222222'">
+                <div class="masonry-overlay"><h4>Apparel & Brand</h4><h3>Project 15</h3><p>Apparel Final</p></div>
+            </div>
+
+            <!-- WEB / UIUX: Images 16-18 -->
             <div class="masonry-item uiux">
-                <img src="static/15.jpg" alt="UIUX 15" onerror="this.src='https://via.placeholder.com/800x600/050505/222222'">
-                <div class="masonry-overlay"><h4>UI / UX Web</h4><h3>Project 15</h3><p>Figma</p></div>
+                <img src="static/16.avif" alt="UIUX 16" loading="lazy" width="600" height="800" onerror="this.src='https://via.placeholder.com/600x800/050505/222222'">
+                <div class="masonry-overlay"><h4>UI / UX Web</h4><h3>Project 16</h3><p>Figma</p></div>
             </div>
 
             <div class="masonry-item uiux">
-                <img src="static/16.jpg" alt="UIUX 16" onerror="this.src='https://via.placeholder.com/600x800/050505/222222'">
-                <div class="masonry-overlay"><h4>UI / UX Web</h4><h3>Project 16</h3><p>Dashboard</p></div>
+                <img src="static/17.avif" alt="UIUX 17" loading="lazy" width="800" height="600" onerror="this.src='https://via.placeholder.com/800x600/050505/222222'">
+                <div class="masonry-overlay"><h4>UI / UX Web</h4><h3>Project 17</h3><p>Dashboard</p></div>
             </div>
 
             <div class="masonry-item uiux">
-                <img src="static/17.jpg" alt="UIUX 17" onerror="this.src='https://via.placeholder.com/800x600/050505/222222'">
-                <div class="masonry-overlay"><h4>UI / UX Web</h4><h3>Project 17</h3><p>Interactive Prototype</p></div>
+                <img src="static/18.avif" alt="UIUX 18" loading="lazy" width="800" height="1200" onerror="this.src='https://via.placeholder.com/800x1200/050505/222222'">
+                <div class="masonry-overlay"><h4>UI / UX Web</h4><h3>Project 18</h3><p>Interactive Prototype</p></div>
             </div>
 
         </div>
@@ -976,20 +976,20 @@
     <div class="carousel-container">
         <div class="carousel-track">
             <!-- Original set -->
-            <img src="static/cert1.jpg" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
-            <img src="static/cert2.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
-            <img src="static/cert3.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
-            <img src="static/cert4.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
-            <img src="static/cert5.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
-            <img src="static/cert6.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert1.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert2.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert3.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert4.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert5.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert6.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
 
             <!-- Duplicated set for seamless infinite scroll -->
-            <img src="static/cert1.jpg" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
-            <img src="static/cert2.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
-            <img src="static/cert3.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
-            <img src="static/cert4.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
-            <img src="static/cert5.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
-            <img src="static/cert6.png" class="cert-img cursor-hover" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert1.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert2.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert3.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert4.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert5.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
+            <img src="static/cert6.avif" class="cert-img cursor-hover" loading="lazy" width="400" height="250" onerror="this.src='https://via.placeholder.com/400x250/050505/222222?text=Certification'">
         </div>
     </div>
 </section>
